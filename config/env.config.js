@@ -11,6 +11,8 @@ function getFile(name){
 
 function getCode(){
     let code = "// env相关代码";
+    code += getFile("EventTarget");
+    code += getFile("WindowProperties");
     code += getFile("Window");
     return code;
 }

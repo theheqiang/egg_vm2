@@ -11,6 +11,8 @@ const env = require("./config/env.config.js");
 const name = "test";
 // 创建虚拟机实例
 const vm = new VM();
+//
+const configCode = fs.readFileSync("./config/config.js");
 // 功能插件相关函数
 const toolsCode = tools.getCode();
 // 浏览器环境相关代码
@@ -26,7 +28,7 @@ const debugCode = user.getCode(name, "input");
 // 异步执行的代码
 const asyncCode = user.getCode(name, "async");
 // 整合代码
-const code = `${toolsCode}${envCode}${globalVarCode}${userVarCode}${proxyObjCode}${debugCode}${asyncCode}`
+const code = `${configCode}${toolsCode}${envCode}${globalVarCode}${userVarCode}${proxyObjCode}${debugCode}${asyncCode}`
 // 创建执行脚本
 const script = new VMScript(code, "./debugJS.js");
 // 运行脚本文件
