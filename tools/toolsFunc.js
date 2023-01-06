@@ -31,6 +31,25 @@
             writable:false
         });
     }
+    // 函数重命名
+    eggvm.toolsFunc.reNameFunc = function reNameFunc(func, name){
+        Object.defineProperty(func, "name", {
+            configurable:true,
+            enumerable:false,
+            writable:false,
+            value:name
+        });
+    }
+    // 函数保护方法
+    eggvm.toolsFunc.safeFunc = function safeFunc(func, name){
+        eggvm.toolsFunc.setNative(func, name);
+        eggvm.toolsFunc.reNameFunc(func, name);
+    }
+
+    eggvm.toolsFunc.safeProto = function safeProto(obj, name){
+        eggvm.toolsFunc.setNative(obj, name);
+        eggvm.toolsFunc.reNameObj(obj, name);
+    }
     // 抛错函数
     eggvm.toolsFunc.throwError = function throwError(name, message){
         let e = new Error();

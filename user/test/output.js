@@ -4,7 +4,6 @@ eggvm = {
     "toolsFunc":{},//功能函数相关，插件
 }
 
-
 // 插件功能相关
 !function (){
     // 函数native化
@@ -37,6 +36,25 @@ eggvm = {
             value:name,
             writable:false
         });
+    }
+    // 函数重命名
+    eggvm.toolsFunc.reNameFunc = function reNameFunc(func, name){
+        Object.defineProperty(func, "name", {
+            configurable:true,
+            enumerable:false,
+            writable:false,
+            value:name
+        });
+    }
+    // 函数保护方法
+    eggvm.toolsFunc.safeFunc = function safeFunc(func, name){
+        eggvm.toolsFunc.setNative(func, name);
+        eggvm.toolsFunc.reNameFunc(func, name);
+    }
+
+    eggvm.toolsFunc.safeProto = function safeProto(obj, name){
+        eggvm.toolsFunc.setNative(obj, name);
+        eggvm.toolsFunc.reNameObj(obj, name);
     }
     // 抛错函数
     eggvm.toolsFunc.throwError = function throwError(name, message){
@@ -137,6 +155,7 @@ eggvm = {
 EventTarget = function EventTarget(){
 
 }
+eggvm.toolsFunc.safeProto(EventTarget, "EventTarget");
 // 函数native化
 eggvm.toolsFunc.setNative(EventTarget, "EventTarget");
 // 修改对象名称
@@ -144,17 +163,17 @@ eggvm.toolsFunc.reNameObj(EventTarget, "EventTarget");
 
 Object.defineProperty(EventTarget.prototype, "addEventListener", {
     value:function (){}
-})
+});
+eggvm.toolsFunc.safeFunc(Object.getOwnPropertyDescriptor(EventTarget.prototype, "addEventListener").value, "addEventListener");
 
 // WindowProperties对象
 WindowProperties = function WindowProperties(){
 
 }
-// 函数native化
-eggvm.toolsFunc.setNative(WindowProperties, "WindowProperties");
-// 修改对象名称
-eggvm.toolsFunc.reNameObj(WindowProperties, "WindowProperties");
-
+// 保护原型
+eggvm.toolsFunc.safeProto(WindowProperties, "WindowProperties");
+// 删除构造方法
+delete WindowProperties.prototype.constructor;
 Object.setPrototypeOf(WindowProperties.prototype, EventTarget.prototype);
 
 
@@ -162,16 +181,42 @@ Object.setPrototypeOf(WindowProperties.prototype, EventTarget.prototype);
 Window = function Window(){
 
 }
-// 函数native化
-eggvm.toolsFunc.setNative(Window, "Window");
-// 修改对象名称
-eggvm.toolsFunc.reNameObj(Window, "Window");
+// 保护Window原型
+eggvm.toolsFunc.safeProto(Window, "Window");
 // 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
+// Window：原型的属性
+Object.defineProperty(Window, "PERSISTENT", {
+    configurable: false,
+    enumerable: true,
+    value: 1,
+    writable: false
+});
+Object.defineProperty(Window, "TEMPORARY", {
+    configurable: false,
+    enumerable: true,
+    value: 0,
+    writable: false
+});
+// Window.prototype：原型对象的属性
+Object.defineProperty(Window.prototype, "PERSISTENT", {
+    configurable: false,
+    enumerable: true,
+    value: 1,
+    writable: false
+});
+Object.defineProperty(Window.prototype, "TEMPORARY", {
+    configurable: false,
+    enumerable: true,
+    value: 0,
+    writable: false
+});
 
+// window对象
 // 删除浏览器中不存在的对象
 delete global;
 delete Buffer;
+delete WindowProperties;
 window = globalThis;
 Object.setPrototypeOf(window, Window.prototype);
 
@@ -181,23 +226,18 @@ Object.defineProperty(window, "atob", {
         return eggvm.toolsFunc.base64.base64decode(str);
     }
 });
-eggvm.toolsFunc.setNative(window.atob,"atob");
+eggvm.toolsFunc.safeFunc(window.atob,"atob");
 Object.defineProperty(window, "btoa", {
     value:function btoa(str){
         return eggvm.toolsFunc.base64.base64encode(str);
     }
 });
-eggvm.toolsFunc.setNative(window.btoa,"btoa");
-
-console.log(atob('YWJj'));
-console.log(btoa('abc'));
-console.log(btoa.toString());
-console.log(atob.toString());
-
+eggvm.toolsFunc.safeFunc(window.btoa,"btoa");
 // 全局变量初始化
 // 网页变量初始化
 
 // 需要代理的对象
 // window = new Proxy(window, {});
 // 需要调试的代码
+debugger;
 // 异步执行的代码

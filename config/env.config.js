@@ -14,6 +14,7 @@ function getCode(){
     code += getFile("EventTarget");
     code += getFile("WindowProperties");
     code += getFile("Window");
+    code += getFile("globalThis");// 全局环境
     return code;
 }
 module.exports = {

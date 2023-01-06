@@ -2,34 +2,33 @@
 Window = function Window(){
 
 }
-// 函数native化
-eggvm.toolsFunc.setNative(Window, "Window");
-// 修改对象名称
-eggvm.toolsFunc.reNameObj(Window, "Window");
+// 保护Window原型
+eggvm.toolsFunc.safeProto(Window, "Window");
 // 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
-
-// 删除浏览器中不存在的对象
-delete global;
-delete Buffer;
-window = globalThis;
-Object.setPrototypeOf(window, Window.prototype);
-
-
-Object.defineProperty(window, "atob", {
-    value:function atob(str){
-        return eggvm.toolsFunc.base64.base64decode(str);
-    }
+// Window：原型的属性
+Object.defineProperty(Window, "PERSISTENT", {
+    configurable: false,
+    enumerable: true,
+    value: 1,
+    writable: false
 });
-eggvm.toolsFunc.setNative(window.atob,"atob");
-Object.defineProperty(window, "btoa", {
-    value:function btoa(str){
-        return eggvm.toolsFunc.base64.base64encode(str);
-    }
+Object.defineProperty(Window, "TEMPORARY", {
+    configurable: false,
+    enumerable: true,
+    value: 0,
+    writable: false
 });
-eggvm.toolsFunc.setNative(window.btoa,"btoa");
-
-console.log(atob('YWJj'));
-console.log(btoa('abc'));
-console.log(btoa.toString());
-console.log(atob.toString());
+// Window.prototype：原型对象的属性
+Object.defineProperty(Window.prototype, "PERSISTENT", {
+    configurable: false,
+    enumerable: true,
+    value: 1,
+    writable: false
+});
+Object.defineProperty(Window.prototype, "TEMPORARY", {
+    configurable: false,
+    enumerable: true,
+    value: 0,
+    writable: false
+});

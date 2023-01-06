@@ -2,10 +2,9 @@
 WindowProperties = function WindowProperties(){
 
 }
-// 函数native化
-eggvm.toolsFunc.setNative(WindowProperties, "WindowProperties");
-// 修改对象名称
-eggvm.toolsFunc.reNameObj(WindowProperties, "WindowProperties");
-
+// 保护原型
+eggvm.toolsFunc.safeProto(WindowProperties, "WindowProperties");
+// 删除构造方法
+delete WindowProperties.prototype.constructor;
 Object.setPrototypeOf(WindowProperties.prototype, EventTarget.prototype);
 
