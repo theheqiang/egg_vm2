@@ -7,15 +7,25 @@ window = globalThis;
 Object.setPrototypeOf(window, Window.prototype);
 
 
-Object.defineProperty(window, "atob", {
+eggvm.toolsFunc.defineProperty(window, "atob", {
+    configurable:true,
+    enumerable:true,
+    writable:true,
     value:function atob(str){
         return eggvm.toolsFunc.base64.base64decode(str);
     }
 });
-eggvm.toolsFunc.safeFunc(window.atob,"atob");
-Object.defineProperty(window, "btoa", {
+eggvm.toolsFunc.defineProperty(window, "btoa", {
+    configurable:true,
+    enumerable:true,
+    writable:true,
     value:function btoa(str){
         return eggvm.toolsFunc.base64.base64encode(str);
     }
 });
-eggvm.toolsFunc.safeFunc(window.btoa,"btoa");
+eggvm.toolsFunc.defineProperty(window, "name", {
+    configurable: true,
+    enumerable: true,
+    get:function (){},
+    set:function (){}
+});

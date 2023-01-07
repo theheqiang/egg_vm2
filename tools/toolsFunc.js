@@ -1,5 +1,48 @@
 // 插件功能相关
 !function (){
+    // env函数分发器
+    eggvm.toolsFunc.dispatch = function dispatch(self, obj, objName, funcName, argList, defaultValue){
+        let name = `${objName}_${funcName}`; // EventTarget_addEventListener
+        try{
+            return eggvm.envFunc[name].apply(self, argList);
+        }catch (e){
+            if(defaultValue === undefined){
+                console.log(`[${name}]正在执行，错误信息: ${e.message}`);
+            }
+            return defaultValue;
+        }
+    }
+    // 定义对象属性defineProperty
+    eggvm.toolsFunc.defineProperty = function defineProperty(obj, prop, oldDescriptor){
+        let newDescriptor = {};
+        newDescriptor.configurable = eggvm.config.proxy || oldDescriptor.configurable;// 如果开启代理必须是true
+        newDescriptor.enumerable = oldDescriptor.enumerable;
+        if(oldDescriptor.hasOwnProperty("writable")){
+            newDescriptor.writable = eggvm.config.proxy || oldDescriptor.writable;// 如果开启代理必须是true
+        }
+        if(oldDescriptor.hasOwnProperty("value")){
+            let value = oldDescriptor.value;
+            if(typeof value === "function"){
+                eggvm.toolsFunc.safeFunc(value, prop);
+            }
+            newDescriptor.value = value;
+        }
+        if(oldDescriptor.hasOwnProperty("get")){
+            let get = oldDescriptor.get;
+            if(typeof get === "function"){
+                eggvm.toolsFunc.safeFunc(get, `get ${prop}`);
+            }
+            newDescriptor.get = get;
+        }
+        if(oldDescriptor.hasOwnProperty("set")){
+            let set = oldDescriptor.set;
+            if(typeof set === "function"){
+                eggvm.toolsFunc.safeFunc(set, `set ${prop}`);
+            }
+            newDescriptor.set = set;
+        }
+        Object.defineProperty(obj, prop, newDescriptor);
+    }
     // 函数native化
     !function (){
         const $toString = Function.prototype.toString;
@@ -45,7 +88,7 @@
         eggvm.toolsFunc.setNative(func, name);
         eggvm.toolsFunc.reNameFunc(func, name);
     }
-
+    // 原型保护方法
     eggvm.toolsFunc.safeProto = function safeProto(obj, name){
         eggvm.toolsFunc.setNative(obj, name);
         eggvm.toolsFunc.reNameObj(obj, name);

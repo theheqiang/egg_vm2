@@ -2,10 +2,56 @@
 debugger;
 eggvm = {
     "toolsFunc":{},//功能函数相关，插件
+    "envFunc":{},// 具体环境实现相关
+    "config":{}, // 配置相关
 }
+eggvm.config.proxy = false;// 是否开启代理
 
 // 插件功能相关
 !function (){
+    // env函数分发器
+    eggvm.toolsFunc.dispatch = function dispatch(self, obj, objName, funcName, argList, defaultValue){
+        let name = `${objName}_${funcName}`; // EventTarget_addEventListener
+        try{
+            return eggvm.envFunc[name].apply(self, argList);
+        }catch (e){
+            if(defaultValue === undefined){
+                console.log(`[${name}]正在执行，错误信息: ${e.message}`);
+            }
+            return defaultValue;
+        }
+    }
+    // 定义对象属性defineProperty
+    eggvm.toolsFunc.defineProperty = function defineProperty(obj, prop, oldDescriptor){
+        let newDescriptor = {};
+        newDescriptor.configurable = eggvm.config.proxy || oldDescriptor.configurable;// 如果开启代理必须是true
+        newDescriptor.enumerable = oldDescriptor.enumerable;
+        if(oldDescriptor.hasOwnProperty("writable")){
+            newDescriptor.writable = eggvm.config.proxy || oldDescriptor.writable;// 如果开启代理必须是true
+        }
+        if(oldDescriptor.hasOwnProperty("value")){
+            let value = oldDescriptor.value;
+            if(typeof value === "function"){
+                eggvm.toolsFunc.safeFunc(value, prop);
+            }
+            newDescriptor.value = value;
+        }
+        if(oldDescriptor.hasOwnProperty("get")){
+            let get = oldDescriptor.get;
+            if(typeof get === "function"){
+                eggvm.toolsFunc.safeFunc(get, `get ${prop}`);
+            }
+            newDescriptor.get = get;
+        }
+        if(oldDescriptor.hasOwnProperty("set")){
+            let set = oldDescriptor.set;
+            if(typeof set === "function"){
+                eggvm.toolsFunc.safeFunc(set, `set ${prop}`);
+            }
+            newDescriptor.set = set;
+        }
+        Object.defineProperty(obj, prop, newDescriptor);
+    }
     // 函数native化
     !function (){
         const $toString = Function.prototype.toString;
@@ -51,7 +97,7 @@ eggvm = {
         eggvm.toolsFunc.setNative(func, name);
         eggvm.toolsFunc.reNameFunc(func, name);
     }
-
+    // 原型保护方法
     eggvm.toolsFunc.safeProto = function safeProto(obj, name){
         eggvm.toolsFunc.setNative(obj, name);
         eggvm.toolsFunc.reNameObj(obj, name);
@@ -151,20 +197,24 @@ eggvm = {
 
 }();
 // 浏览器接口具体的实现
+
+eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListener(){
+    console.log(this === window);
+    console.log(arguments);
+    debugger;
+    return "666"
+}
 // env相关代码// EventTarget对象
 EventTarget = function EventTarget(){
 
 }
 eggvm.toolsFunc.safeProto(EventTarget, "EventTarget");
-// 函数native化
-eggvm.toolsFunc.setNative(EventTarget, "EventTarget");
-// 修改对象名称
-eggvm.toolsFunc.reNameObj(EventTarget, "EventTarget");
 
-Object.defineProperty(EventTarget.prototype, "addEventListener", {
-    value:function (){}
+eggvm.toolsFunc.defineProperty(EventTarget.prototype, "addEventListener", {
+    value:function (){
+        return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "addEventListener", arguments);
+    }
 });
-eggvm.toolsFunc.safeFunc(Object.getOwnPropertyDescriptor(EventTarget.prototype, "addEventListener").value, "addEventListener");
 
 // WindowProperties对象
 WindowProperties = function WindowProperties(){
@@ -186,26 +236,26 @@ eggvm.toolsFunc.safeProto(Window, "Window");
 // 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
 // Window：原型的属性
-Object.defineProperty(Window, "PERSISTENT", {
+eggvm.toolsFunc.defineProperty(Window, "PERSISTENT", {
     configurable: false,
     enumerable: true,
     value: 1,
     writable: false
 });
-Object.defineProperty(Window, "TEMPORARY", {
+eggvm.toolsFunc.defineProperty(Window, "TEMPORARY", {
     configurable: false,
     enumerable: true,
     value: 0,
     writable: false
 });
 // Window.prototype：原型对象的属性
-Object.defineProperty(Window.prototype, "PERSISTENT", {
+eggvm.toolsFunc.defineProperty(Window.prototype, "PERSISTENT", {
     configurable: false,
     enumerable: true,
     value: 1,
     writable: false
 });
-Object.defineProperty(Window.prototype, "TEMPORARY", {
+eggvm.toolsFunc.defineProperty(Window.prototype, "TEMPORARY", {
     configurable: false,
     enumerable: true,
     value: 0,
@@ -221,23 +271,39 @@ window = globalThis;
 Object.setPrototypeOf(window, Window.prototype);
 
 
-Object.defineProperty(window, "atob", {
+eggvm.toolsFunc.defineProperty(window, "atob", {
+    configurable:true,
+    enumerable:true,
+    writable:true,
     value:function atob(str){
         return eggvm.toolsFunc.base64.base64decode(str);
     }
 });
-eggvm.toolsFunc.safeFunc(window.atob,"atob");
-Object.defineProperty(window, "btoa", {
+eggvm.toolsFunc.defineProperty(window, "btoa", {
+    configurable:true,
+    enumerable:true,
+    writable:true,
     value:function btoa(str){
         return eggvm.toolsFunc.base64.base64encode(str);
     }
 });
-eggvm.toolsFunc.safeFunc(window.btoa,"btoa");
+eggvm.toolsFunc.defineProperty(window, "name", {
+    configurable: true,
+    enumerable: true,
+    get:function (){},
+    set:function (){}
+});
+
 // 全局变量初始化
 // 网页变量初始化
+
 
 // 需要代理的对象
 // window = new Proxy(window, {});
 // 需要调试的代码
+
 debugger;
+
+let result = window.addEventListener("load", function xxxx(){});
+console.log(result);
 // 异步执行的代码
