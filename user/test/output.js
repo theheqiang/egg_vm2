@@ -204,6 +204,9 @@ eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListen
     debugger;
     return "666"
 }
+eggvm.envFunc.window_atob = function window_atob(){
+    return "正在调用atob方法"
+}
 // env相关代码// EventTarget对象
 EventTarget = function EventTarget(){
 
@@ -212,10 +215,21 @@ eggvm.toolsFunc.safeProto(EventTarget, "EventTarget");
 
 eggvm.toolsFunc.defineProperty(EventTarget.prototype, "addEventListener", {
     value:function (){
-        return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "addEventListener", arguments);
+        return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "addEventListener", arguments, "默认值");
     }
 });
 
+EventTarget = function EventTarget(){}
+eggvm.toolsFunc.safeProto(EventTarget, "EventTarget");
+eggvm.toolsFunc.defineProperty(EventTarget.prototype, "addEventListener", {configurable:true, enumerable:true, writable:true,
+    value: function (){return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "addEventListener", arguments)}
+});
+
+
+
+
+eggvm.toolsFunc.defineProperty(EventTarget.prototype, "dispatchEvent", {configurable:true, enumerable:true, writable:true, value: function (){return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "dispatchEvent", arguments)}});
+eggvm.toolsFunc.defineProperty(EventTarget.prototype, "removeEventListener", {configurable:true, enumerable:true, writable:true, value: function (){return eggvm.toolsFunc.dispatch(this, EventTarget.prototype, "EventTarget", "removeEventListener", arguments)}});
 // WindowProperties对象
 WindowProperties = function WindowProperties(){
 
@@ -229,12 +243,14 @@ Object.setPrototypeOf(WindowProperties.prototype, EventTarget.prototype);
 
 // Window对象
 Window = function Window(){
-
+    return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor");
 }
 // 保护Window原型
 eggvm.toolsFunc.safeProto(Window, "Window");
 // 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
+
+
 // Window：原型的属性
 eggvm.toolsFunc.defineProperty(Window, "PERSISTENT", {
     configurable: false,
@@ -248,6 +264,8 @@ eggvm.toolsFunc.defineProperty(Window, "TEMPORARY", {
     value: 0,
     writable: false
 });
+
+
 // Window.prototype：原型对象的属性
 eggvm.toolsFunc.defineProperty(Window.prototype, "PERSISTENT", {
     configurable: false,
@@ -262,6 +280,8 @@ eggvm.toolsFunc.defineProperty(Window.prototype, "TEMPORARY", {
     writable: false
 });
 
+
+
 // window对象
 // 删除浏览器中不存在的对象
 delete global;
@@ -271,14 +291,13 @@ window = globalThis;
 Object.setPrototypeOf(window, Window.prototype);
 
 
-eggvm.toolsFunc.defineProperty(window, "atob", {
-    configurable:true,
-    enumerable:true,
-    writable:true,
-    value:function atob(str){
-        return eggvm.toolsFunc.base64.base64decode(str);
-    }
+
+
+eggvm.toolsFunc.defineProperty(window, "atob", {configurable:true, enumerable:true, writable:true,
+    value:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "atob", arguments)}
 });
+
+
 eggvm.toolsFunc.defineProperty(window, "btoa", {
     configurable:true,
     enumerable:true,
@@ -287,12 +306,8 @@ eggvm.toolsFunc.defineProperty(window, "btoa", {
         return eggvm.toolsFunc.base64.base64encode(str);
     }
 });
-eggvm.toolsFunc.defineProperty(window, "name", {
-    configurable: true,
-    enumerable: true,
-    get:function (){},
-    set:function (){}
-});
+
+eggvm.toolsFunc.defineProperty(window, "name", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_get", arguments, 'window.name666')}, set:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_set", arguments)}});
 
 // 全局变量初始化
 // 网页变量初始化

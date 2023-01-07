@@ -6,3 +6,6 @@ eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListen
     debugger;
     return "666"
 }
+eggvm.envFunc.window_atob = function window_atob(){
+    return "正在调用atob方法"
+}

@@ -1,11 +1,13 @@
 // Window对象
 Window = function Window(){
-
+    return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor");
 }
 // 保护Window原型
 eggvm.toolsFunc.safeProto(Window, "Window");
 // 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
+
+
 // Window：原型的属性
 eggvm.toolsFunc.defineProperty(Window, "PERSISTENT", {
     configurable: false,
@@ -19,6 +21,8 @@ eggvm.toolsFunc.defineProperty(Window, "TEMPORARY", {
     value: 0,
     writable: false
 });
+
+
 // Window.prototype：原型对象的属性
 eggvm.toolsFunc.defineProperty(Window.prototype, "PERSISTENT", {
     configurable: false,
@@ -32,3 +36,5 @@ eggvm.toolsFunc.defineProperty(Window.prototype, "TEMPORARY", {
     value: 0,
     writable: false
 });
+
+
