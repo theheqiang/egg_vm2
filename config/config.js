@@ -6,4 +6,3 @@ eggvm = {
     "config":{}, // 配置相关
 }
 eggvm.config.proxy = false;// 是否开启代理
-

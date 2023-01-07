@@ -14,6 +14,12 @@ function getCode(){
     code += getFile("EventTarget");
     code += getFile("WindowProperties");
     code += getFile("Window");
+    code += getFile("Node");
+    code += getFile("Document");
+    code += getFile("HTMLDocument");
+    code += getFile("Storage");
+    code += getFile("Navigator");
+    code += getFile("Location");
     code += getFile("globalThis");// 全局环境
     return code;
 }

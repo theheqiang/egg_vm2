@@ -1,40 +1,8 @@
 // Window对象
-Window = function Window(){
-    return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor");
-}
-// 保护Window原型
+Window = function Window(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
 eggvm.toolsFunc.safeProto(Window, "Window");
-// 设置Window.prototype的原型对象
 Object.setPrototypeOf(Window.prototype, WindowProperties.prototype);
-
-
-// Window：原型的属性
-eggvm.toolsFunc.defineProperty(Window, "PERSISTENT", {
-    configurable: false,
-    enumerable: true,
-    value: 1,
-    writable: false
-});
-eggvm.toolsFunc.defineProperty(Window, "TEMPORARY", {
-    configurable: false,
-    enumerable: true,
-    value: 0,
-    writable: false
-});
-
-
-// Window.prototype：原型对象的属性
-eggvm.toolsFunc.defineProperty(Window.prototype, "PERSISTENT", {
-    configurable: false,
-    enumerable: true,
-    value: 1,
-    writable: false
-});
-eggvm.toolsFunc.defineProperty(Window.prototype, "TEMPORARY", {
-    configurable: false,
-    enumerable: true,
-    value: 0,
-    writable: false
-});
-
-
+eggvm.toolsFunc.defineProperty(Window, "TEMPORARY", {configurable:false, enumerable:true, writable:false, value:0});
+eggvm.toolsFunc.defineProperty(Window, "PERSISTENT", {configurable:false, enumerable:true, writable:false, value:1});
+eggvm.toolsFunc.defineProperty(Window.prototype, "TEMPORARY", {configurable:false, enumerable:true, writable:false, value:0});
+eggvm.toolsFunc.defineProperty(Window.prototype, "PERSISTENT", {configurable:false, enumerable:true, writable:false, value:1});

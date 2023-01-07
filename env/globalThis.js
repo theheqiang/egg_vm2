@@ -8,12 +8,11 @@ Object.setPrototypeOf(window, Window.prototype);
 
 
 
-
 eggvm.toolsFunc.defineProperty(window, "atob", {configurable:true, enumerable:true, writable:true,
-    value:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "atob", arguments)}
+    value:function atob(str){
+        return eggvm.toolsFunc.base64.base64decode(str);
+    }
 });
-
-
 eggvm.toolsFunc.defineProperty(window, "btoa", {
     configurable:true,
     enumerable:true,
@@ -22,5 +21,6 @@ eggvm.toolsFunc.defineProperty(window, "btoa", {
         return eggvm.toolsFunc.base64.base64encode(str);
     }
 });
+eggvm.toolsFunc.defineProperty(window, "name", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_get", arguments, '')}, set:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_set", arguments)}});
 
-eggvm.toolsFunc.defineProperty(window, "name", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_get", arguments, 'window.name666')}, set:function (){return eggvm.toolsFunc.dispatch(this, window, "window", "name_set", arguments)}});
+eggvm.toolsFunc.defineProperty(window, "location", {configurable: false});
