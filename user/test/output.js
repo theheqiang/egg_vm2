@@ -5,7 +5,8 @@ eggvm = {
     "envFunc":{},// 具体环境实现相关
     "config":{}, // 配置相关
 }
-eggvm.config.proxy = false;// 是否开启代理
+eggvm.config.proxy = false; // 是否开启代理
+eggvm.config.print = true; // 是否输出日志
 // 插件功能相关
 !function (){
     // hook 插件
@@ -41,7 +42,7 @@ eggvm.config.proxy = false;// 是否开启代理
             isExec = true;
         }
         // 替换的函数
-        hookFunc = function (){
+        let hookFunc = function (){
             if(isDebug){
                 debugger;
             }
@@ -68,7 +69,6 @@ eggvm.config.proxy = false;// 是否开启代理
         eggvm.toolsFunc.reNameFunc(hookFunc, funcInfo.funcName);
         return hookFunc;
     }
-    
     // hook 对象的属性，本质是替换属性描述符
     eggvm.toolsFunc.hookObj = function hookObj(obj, objName, propName, isDebug){
         // obj :需要hook的对象
@@ -115,7 +115,6 @@ eggvm.config.proxy = false;// 是否开启代理
         }
         Object.defineProperty(obj, propName, newDescriptor);
     }
-    
     // hook 原型对象的所有属性
     eggvm.toolsFunc.hookProto = function hookProto(proto, isDebug){
         // proto :函数原型
@@ -127,7 +126,6 @@ eggvm.config.proxy = false;// 是否开启代理
         }
         console.log(`hook ${name}.prototype`);
     }
-    
     // 获取对象类型
     eggvm.toolsFunc.getType = function getType(obj){
         return Object.prototype.toString.call(obj);
@@ -277,6 +275,12 @@ eggvm.config.proxy = false;// 是否开启代理
     // env函数分发器
     eggvm.toolsFunc.dispatch = function dispatch(self, obj, objName, funcName, argList, defaultValue){
         let name = `${objName}_${funcName}`; // EventTarget_addEventListener
+        if(Object.getOwnPropertyDescriptor(obj, "constructor") !== undefined){
+            if(Object.getOwnPropertyDescriptor(self, "constructor") !== undefined){
+                // self 不是实例对象
+                return eggvm.toolsFunc.throwError('TypeError', 'Illegal invocation');
+            }
+        }
         try{
             return eggvm.envFunc[name].apply(self, argList);
         }catch (e){
@@ -468,6 +472,9 @@ eggvm.config.proxy = false;// 是否开启代理
     }
     eggvm.envFunc.document_location_get = function document_location_get(){
         return location;
+    }
+    eggvm.envFunc.Document_createElement = function Document_createElement(){
+        return "<div></div>";
     }
 }();
 
@@ -947,6 +954,21 @@ eggvm.toolsFunc.defineProperty(window, "name", {configurable:true, enumerable:tr
 
 eggvm.toolsFunc.defineProperty(window, "location", {configurable: false});
 // 全局变量初始化
+!function (){
+    let onEnter = function (obj){
+        try{
+            eggvm.toolsFunc.printLog(obj.args);
+        }catch (e){}
+    }
+    console.log = eggvm.toolsFunc.hook(
+        console.log,
+        undefined,
+        false,
+        onEnter,
+        function (){},
+        eggvm.config.print
+    );
+}();
 // 网页变量初始化
 
 

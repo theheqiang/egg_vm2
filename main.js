@@ -7,11 +7,15 @@ const tools = require("./config/tools.config.js");
 const env = require("./config/env.config.js");
 
 
-// 名称
+// 名称!
 const name = "test";
+// 情况日志
+fs.writeFileSync(`./user/${name}/log.txt`, "");
 // 创建虚拟机实例
-const vm = new VM();
-//
+const vm = new VM({
+    sandbox:{fs, _name_:name}
+});
+// 配置相关
 const configCode = fs.readFileSync("./config/config.js");
 // 功能插件相关函数
 const toolsCode = tools.getCode();
@@ -28,9 +32,11 @@ const debugCode = user.getCode(name, "input");
 // 异步执行的代码
 const asyncCode = user.getCode(name, "async");
 // 整合代码
-const code = `${configCode}${toolsCode}${envCode}${globalVarCode}${userVarCode}${proxyObjCode}${debugCode}${asyncCode}`
+const code = `${configCode}${toolsCode}${envCode}${globalVarCode}${userVarCode}${proxyObjCode}${debugCode}${asyncCode}`;
+const logCode = fs.readFileSync("./tools/printLog.js");
+const codeTest = `${configCode}${toolsCode}${logCode}${envCode}${globalVarCode}${userVarCode}${proxyObjCode}${debugCode}${asyncCode}`;
 // 创建执行脚本
-const script = new VMScript(code, "./debugJS.js");
+const script = new VMScript(codeTest, "./debugJS.js");
 // 运行脚本文件
 const result = vm.run(script);
 // 输出结果

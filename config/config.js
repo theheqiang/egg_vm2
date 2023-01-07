@@ -5,4 +5,5 @@ eggvm = {
     "envFunc":{},// 具体环境实现相关
     "config":{}, // 配置相关
 }
-eggvm.config.proxy = false;// 是否开启代理
+eggvm.config.proxy = false; // 是否开启代理
+eggvm.config.print = true; // 是否输出日志

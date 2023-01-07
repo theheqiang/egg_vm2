@@ -6,4 +6,7 @@
     eggvm.envFunc.document_location_get = function document_location_get(){
         return location;
     }
+    eggvm.envFunc.Document_createElement = function Document_createElement(){
+        return "<div></div>";
+    }
 }();
