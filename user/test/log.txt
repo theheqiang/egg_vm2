@@ -1,2 +1,3 @@
-[Document_implementation_get]正在执行，错误信息: Cannot read property 'apply' of undefined 
-{get|obj:[document] -> prop:[implementation],ret:[undefined]} 
+[Document_all_get]正在执行，错误信息: Cannot read property 'apply' of undefined 
+[Element_setAttribute]正在执行，错误信息: Cannot read property 'apply' of undefined 
+[Document_querySelector]正在执行，错误信息: Cannot read property 'apply' of undefined 

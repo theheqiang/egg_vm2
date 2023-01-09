@@ -1,5 +1,63 @@
 // 插件功能相关
 !function (){
+    // 单标签字符串解析
+    eggvm.toolsFunc.getTagJson = function getTagJson(tagStr){
+        let arrList = tagStr.match("<(.*?)>")[1].split(" ");
+        let tagJson = {};
+        tagJson["type"] = arrList[0];
+        tagJson["prop"] = {};
+        for(let i=1;i<arrList.length;i++){
+            let item = arrList[i].split("=");
+            let key = item[0];
+            let value = item[1].replace(/["']/g,"");
+            tagJson["prop"][key] = value;
+        }
+        return tagJson;
+    }
+
+
+    eggvm.toolsFunc.getCollection = function getCollection(type){
+        let collection = [];
+        for (let i = 0; i < eggvm.memory.tag.length; i++) {
+            let tag = eggvm.memory.tag[i];
+            if(eggvm.toolsFunc.getType(tag) === type){
+                collection.push(tag);
+            }
+        }
+        return collection;
+    }
+
+    // 获取原型对象上自身属性值
+    eggvm.toolsFunc.getProtoArr = function getProtoArr(key){
+        return this[eggvm.memory.symbolData] && this[eggvm.memory.symbolData][key];
+    }
+     // 设置原型对象上自身属性值
+    eggvm.toolsFunc.setProtoArr = function setProtoArr(key, value){
+        if(!(eggvm.memory.symbolData in this)){
+            Object.defineProperty(this, eggvm.memory.symbolData, {
+                enumerable:false,
+                configurable:false,
+                writable:true,
+                value:{}
+            });
+        }
+        this[eggvm.memory.symbolData][key] = value;
+    }
+
+    // 获取一个自增的ID
+    eggvm.toolsFunc.getID = function getID(){
+        if(eggvm.memory.ID === undefined){
+            eggvm.memory.ID = 0;
+        }
+        eggvm.memory.ID += 1;
+        return eggvm.memory.ID;
+    }
+
+    // 代理原型对象
+    eggvm.toolsFunc.createProxyObj = function createProxyObj(obj, proto, name){
+        Object.setPrototypeOf(obj,proto.prototype);
+        return eggvm.toolsFunc.proxy(obj, `${name}_ID(${eggvm.toolsFunc.getID()})`);
+    }
     // hook 插件
     eggvm.toolsFunc.hook = function hook(func, funcInfo, isDebug, onEnter, onLeave, isExec){
         // func ： 原函数，需要hook的函数
@@ -56,7 +114,8 @@
             return obj.result;
         }
         // hook 后的函数进行native
-        eggvm.toolsFunc.safeFunc(hookFunc, funcInfo.funcName);
+        eggvm.toolsFunc.setNative(hookFunc, funcInfo.funcName);
+        eggvm.toolsFunc.reNameFunc(hookFunc, funcInfo.funcName);
         return hookFunc;
     }
     // hook 对象的属性，本质是替换属性描述符
@@ -78,7 +137,6 @@
         }
         if(oldDescriptor.hasOwnProperty("value")){
             let value = oldDescriptor.value;
-            // 不是函数则直接赋值
             if(typeof value !== "function"){
                 return;
             }
@@ -86,7 +144,6 @@
                 "objName": objName,
                 "funcName": propName
             }
-            // 对函数进行hook
             newDescriptor.value = eggvm.toolsFunc.hook(value,funcInfo ,isDebug);
         }
         if(oldDescriptor.hasOwnProperty("get")){
@@ -219,14 +276,14 @@
                     result = Reflect.apply(target, thisArg, argumentsList);
                     let type = eggvm.toolsFunc.getType(result);
                     if(result instanceof Object){
-                        console.log(`{apply|function:[${objName}], type:[${type}]}`);
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}], type:[${type}]}`);
                     }else if(typeof result === "symbol"){
-                        console.log(`{apply|function:[${objName}], result:[${result.toString()}]}`);
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}] result:[${result.toString()}]}`);
                     }else{
-                        console.log(`{apply|function:[${objName}], result:[${result}]}`);
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}] result:[${result}]}`);
                     }
                 }catch (e) {
-                    console.log(`{apply|function:[${objName}],error:[${e.message}]}`);
+                    console.log(`{apply|function:[${objName}], args:[${argumentsList}] error:[${e.message}]}`);
                 }
                 return result;
             },

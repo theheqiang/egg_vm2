@@ -11,3 +11,6 @@ eggvm.toolsFunc.defineProperty(Storage.prototype, "setItem", {configurable:true,
 // localStorage对象
 localStorage = {}
 Object.setPrototypeOf(localStorage, Storage.prototype);
+// sessionStorage对象
+sessionStorage = {}
+Object.setPrototypeOf(sessionStorage, Storage.prototype);

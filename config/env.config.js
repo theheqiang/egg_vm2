@@ -8,6 +8,21 @@ function getFile(name){
         return "";
     }
 }
+function getHtmlElement(){
+    try{
+        let code = "";
+        let fileList = fs.readdirSync("./env/htmlElements");
+        for (let i = 0; i < fileList.length; i++) {
+            code += fs.readFileSync(`./env/htmlElements/${fileList[i]}`) + "\r\n";
+        }
+        return code;
+    }catch (e){
+        console.log(`./env/${name}.js不存在`);
+        return "";
+    }
+}
+
+
 
 function getCode(){
     let code = "// env相关代码";
@@ -15,11 +30,15 @@ function getCode(){
     code += getFile("WindowProperties");
     code += getFile("Window");
     code += getFile("Node");
+    code += getFile("Element");
+    code += getFile("HTMLElement");
+    code += getHtmlElement();
     code += getFile("Document");
     code += getFile("HTMLDocument");
     code += getFile("Storage");
     code += getFile("Navigator");
     code += getFile("Location");
+    code += getFile("HTMLCollection");
     code += getFile("globalThis");// 全局环境
     return code;
 }
