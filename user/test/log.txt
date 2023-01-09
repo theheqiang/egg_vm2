@@ -1,0 +1,2 @@
+[Document_implementation_get]正在执行，错误信息: Cannot read property 'apply' of undefined 
+{get|obj:[document] -> prop:[implementation],ret:[undefined]} 
