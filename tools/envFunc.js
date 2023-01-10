@@ -1,5 +1,113 @@
 // 浏览器接口具体的实现
 !function (){
+    eggvm.envFunc.MimeTypeArray_namedItem = function MimeTypeArray_namedItem(){
+        let name = arguments[0];
+        return this[name];
+    }
+    eggvm.envFunc.MimeTypeArray_item = function MimeTypeArray_item(){
+        let index = arguments[0];
+        return this[index];
+    }
+    eggvm.envFunc.Plugin_namedItem = function Plugin_namedItem(){
+        let name = arguments[0];
+        return this[name];
+    }
+    eggvm.envFunc.Plugin_item = function Plugin_item(){
+        let index = arguments[0];
+        return this[index];
+    }
+    eggvm.envFunc.PluginArray_namedItem = function PluginArray_namedItem(){
+        let name = arguments[0];
+        return this[name];
+    }
+    eggvm.envFunc.PluginArray_item = function PluginArray_item(){
+        let index = arguments[0];
+        return this[index];
+    }
+    eggvm.envFunc.Navigator_mimeTypes_get = function Navigator_mimeTypes_get(){
+        return eggvm.memory.globalVar.mimeTypeArray;
+    }
+    eggvm.envFunc.MimeType_suffixes_get = function MimeType_suffixes_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "suffixes");
+    }
+    eggvm.envFunc.MimeType_enabledPlugin_get = function MimeType_enabledPlugin_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "enabledPlugin");
+    }
+    eggvm.envFunc.MimeType_description_get = function MimeType_description_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "description");
+    }
+    eggvm.envFunc.Plugin_length_get = function Plugin_length_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "length");
+    }
+    eggvm.envFunc.Plugin_filename_get = function Plugin_filename_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "filename");
+    }
+    eggvm.envFunc.Plugin_description_get = function Plugin_description_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "description");
+    }
+    eggvm.envFunc.Plugin_name_get = function Plugin_name_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "name");
+    }
+    eggvm.envFunc.PluginArray_length_get = function PluginArray_length_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "length");
+    }
+    eggvm.envFunc.MimeType_type_get = function MimeType_type_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "type");
+    }
+    eggvm.envFunc.MimeTypeArray_length_get = function MimeTypeArray_length_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "length");
+    }
+    eggvm.envFunc.Navigator_plugins_get = function Navigator_plugins_get(){
+        return eggvm.memory.globalVar.pluginArray;
+    }
+    eggvm.envFunc.HTMLAnchorElement_hash_get = function HTMLAnchorElement_hash_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "hash");
+    }
+    eggvm.envFunc.HTMLAnchorElement_origin_get = function HTMLAnchorElement_origin_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "origin");
+    }
+    eggvm.envFunc.HTMLAnchorElement_search_get = function HTMLAnchorElement_search_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "search");
+    }
+    eggvm.envFunc.HTMLAnchorElement_hostname_get = function HTMLAnchorElement_hostname_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "hostname");
+    }
+    eggvm.envFunc.HTMLAnchorElement_protocol_get = function HTMLAnchorElement_protocol_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "protocol");
+    }
+    eggvm.envFunc.HTMLAnchorElement_href_get = function HTMLAnchorElement_href_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "href");
+    }
+    eggvm.envFunc.HTMLAnchorElement_href_set = function HTMLAnchorElement_href_set(){
+        let url = arguments[0];
+        if(url.indexOf("http") === -1){
+            url = location.protocol + "//" + location.hostname + url;
+        }
+        let jsonUrl = eggvm.toolsFunc.parseUrl(url);
+        eggvm.toolsFunc.setProtoArr.call(this, "origin", jsonUrl["origin"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "protocol", jsonUrl["protocol"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "host", jsonUrl["host"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "hostname", jsonUrl["hostname"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "port", jsonUrl["port"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "pathname", jsonUrl["pathname"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "search", jsonUrl["search"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "hash", jsonUrl["hash"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "href", jsonUrl["href"]);
+    }
+    eggvm.envFunc.location_hostname_get = function location_hostname_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "hostname");
+    }
+    eggvm.envFunc.location_hostname_set = function location_hostname_set(){
+        let value = arguments[0];
+        return eggvm.toolsFunc.setProtoArr.call(this, "hostname", value);
+    }
+    eggvm.envFunc.location_protocol_get = function location_protocol_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "protocol");
+    }
+    eggvm.envFunc.location_protocol_set = function location_protocol_set(){
+        let value = arguments[0];
+        return eggvm.toolsFunc.setProtoArr.call(this, "protocol", value);
+    }
     eggvm.envFunc.HTMLInputElement_value_get = function HTMLInputElement_value_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "value");
     }
@@ -108,8 +216,8 @@
                 tag = eggvm.toolsFunc.createProxyObj(tag,HTMLInputElement,`Document_createElement_${tagName}`);
                 eggvm.memory.tag.push(tag);
                 break;
-            case "style":
-                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLStyleElement,`Document_createElement_${tagName}`);
+             case "a":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLAnchorElement,`Document_createElement_${tagName}`);
                 eggvm.memory.tag.push(tag);
                 break;
             default:
@@ -157,6 +265,34 @@
         }
         return null;
     }
+    eggvm.envFunc.Document_cookie_get = function Document_cookie_get(){
+        let jsonCookie = eggvm.memory.globalVar.jsonCookie;
+        let tempCookie = "";
+        for(const key in jsonCookie){
+            if(key === ""){
+                tempCookie += `${jsonCookie[key]}; `;
+            }else{
+                tempCookie += `${key}=${jsonCookie[key]}; `;
+            }
+        }
+        return tempCookie;
+    }
+    eggvm.envFunc.Document_cookie_set = function Document_cookie_set(){
+        let cookieValue = arguments[0];
+        let index = cookieValue.indexOf(";");
+        if(index !== -1){
+            cookieValue = cookieValue.substring(0, index);
+        }
+        if(cookieValue.indexOf("=") === -1){
+            eggvm.memory.globalVar.jsonCookie[""] = cookieValue.trim();
+        }else{
+            let item = cookieValue.split("=");
+            let k = item[0].trim();
+            let v = item[1].trim();
+            eggvm.memory.globalVar.jsonCookie[k] = v;
+        }
+    }
+
     eggvm.envFunc.document_location_get = function document_location_get(){
         return location;
     }

@@ -1,5 +1,126 @@
 // 插件功能相关
 !function (){
+    // 创建pluginArray
+    eggvm.toolsFunc.createPluginArray = function createPluginArray(){
+        let pluginArray = {};
+        pluginArray = eggvm.toolsFunc.createProxyObj(pluginArray, PluginArray, "pluginArray");
+        eggvm.toolsFunc.setProtoArr.call(pluginArray, "length", 0);
+        return pluginArray;
+    }
+    // 添加Plugin
+    eggvm.toolsFunc.addPlugin = function addPlugin(plugin){
+        let pluginArray = eggvm.memory.globalVar.pluginArray;
+        if(pluginArray === undefined){
+            pluginArray = eggvm.toolsFunc.createPluginArray();
+        }
+        let index = pluginArray.length;
+        pluginArray[index] = plugin;
+        Object.defineProperty(pluginArray, plugin.name, {value: plugin, writable: false, enumerable: false, configurable: true});
+        eggvm.toolsFunc.setProtoArr.call(pluginArray, "length", index+1);
+        eggvm.memory.globalVar.pluginArray = pluginArray;
+        return pluginArray;
+    }
+    // 创建MimeTypeArray对象
+    eggvm.toolsFunc.createMimeTypeArray = function createMimeTypeArray(){
+        let mimeTypeArray = {};
+        mimeTypeArray = eggvm.toolsFunc.createProxyObj(mimeTypeArray, MimeTypeArray, "mimeTypeArray");
+        eggvm.toolsFunc.setProtoArr.call(mimeTypeArray, "length", 0);
+        return mimeTypeArray;
+    }
+    // 添加MimeType
+    eggvm.toolsFunc.addMimeType = function addMimeType(mimeType){
+        let mimeTypeArray = eggvm.memory.globalVar.mimeTypeArray;
+        if(mimeTypeArray === undefined){
+            mimeTypeArray = eggvm.toolsFunc.createMimeTypeArray();
+        }
+        let index = mimeTypeArray.length;
+        let flag = true;
+        for(let i=0;i<index;i++){
+            if(mimeTypeArray[i].type === mimeType.type){
+                flag = false;
+            }
+        }
+        if(flag){
+            mimeTypeArray[index] = mimeType;
+            Object.defineProperty(mimeTypeArray, mimeType.type, {value: mimeType, writable: false, enumerable: false, configurable: true});
+            eggvm.toolsFunc.setProtoArr.call(mimeTypeArray, "length", index+1);
+        }
+        eggvm.memory.globalVar.mimeTypeArray = mimeTypeArray;
+        return mimeTypeArray;
+    }
+
+    // 创建MimeType
+    eggvm.toolsFunc.createMimeType = function createMimeType(mimeTypeJson, plugin){
+        let mimeType = {};
+        eggvm.toolsFunc.createProxyObj(mimeType, MimeType, "mimeType");
+        eggvm.toolsFunc.setProtoArr.call(mimeType, "description", mimeTypeJson.description);
+        eggvm.toolsFunc.setProtoArr.call(mimeType, "suffixes", mimeTypeJson.suffixes);
+        eggvm.toolsFunc.setProtoArr.call(mimeType, "type", mimeTypeJson.type);
+        eggvm.toolsFunc.setProtoArr.call(mimeType, "enabledPlugin", plugin);
+        eggvm.toolsFunc.addMimeType(mimeType);
+        return mimeType;
+    }
+
+    // 创建plugin
+    eggvm.toolsFunc.createPlugin = function createPlugin(data){
+        let mimeTypes = data.mimeTypes;
+        let plugin = {};
+        plugin = eggvm.toolsFunc.createProxyObj(plugin, Plugin, "plugin");
+        eggvm.toolsFunc.setProtoArr.call(plugin, "description", data.description);
+        eggvm.toolsFunc.setProtoArr.call(plugin, "filename", data.filename);
+        eggvm.toolsFunc.setProtoArr.call(plugin, "name", data.name);
+        eggvm.toolsFunc.setProtoArr.call(plugin, "length", mimeTypes.length);
+        for(let i=0; i<mimeTypes.length; i++){
+            let mimeType = eggvm.toolsFunc.createMimeType(mimeTypes[i], plugin);
+            plugin[i] = mimeType;
+            Object.defineProperty(plugin, mimeTypes[i].type, {value: mimeType, writable: false, enumerable: false, configurable: true});
+        }
+        eggvm.toolsFunc.addPlugin(plugin);
+        return plugin;
+    }
+
+    // 解析URL属性
+    eggvm.toolsFunc.parseUrl = function parseUrl(str) {
+        if (!parseUrl || !parseUrl.options) {
+            parseUrl.options = {
+                strictMode: false,
+                key: ["href", "protocol", "host", "userInfo", "user", "password", "hostname", "port", "relative", "pathname", "directory", "file", "search", "hash"],
+                q: {
+                    name: "queryKey",
+                    parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+                },
+                parser: {
+                    strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+                    loose: /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+                }
+            };
+        }
+        if (!str) {
+            return '';
+        }
+        var o = parseUrl.options,
+            m = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
+            urlJson = {},
+            i = 14;
+        while (i--) urlJson[o.key[i]] = m[i] || "";
+        urlJson[o.q.name] = {};
+        urlJson[o.key[12]].replace(o.q.parser, function($0, $1, $2) {
+            if ($1) urlJson[o.q.name][$1] = $2;
+        });
+        delete  urlJson["queryKey"];
+        delete  urlJson["userInfo"];
+        delete  urlJson["user"];
+        delete  urlJson["password"];
+        delete  urlJson["relative"];
+        delete  urlJson["directory"];
+        delete  urlJson["file"];
+        urlJson["protocol"] += ":";
+        urlJson["origin"] = urlJson["protocol"] + "//" + urlJson["host"];
+        urlJson["search"] = urlJson["search"] && "?" + urlJson["search"];
+        urlJson["hash"] = urlJson["hash"] && "#" + urlJson["hash"];
+        return urlJson;
+    }
+
     // 单标签字符串解析
     eggvm.toolsFunc.getTagJson = function getTagJson(tagStr){
         let arrList = tagStr.match("<(.*?)>")[1].split(" ");
@@ -9,7 +130,7 @@
         for(let i=1;i<arrList.length;i++){
             let item = arrList[i].split("=");
             let key = item[0];
-            let value = item[1].replace(/["']/g,"");
+            let value = item[1].replaceAll("\"","").replaceAll("'","");
             tagJson["prop"][key] = value;
         }
         return tagJson;

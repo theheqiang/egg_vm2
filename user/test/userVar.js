@@ -5,9 +5,10 @@
     // console.log(new Date().getTime());// 1666689952666
     // console.log(Math.random());// 0.5
 
-    let meta1 = document.createElement("meta");
-    let meta2 = document.createElement("meta");
-    let head = document.createElement("head");
-    meta2.content = "YVc1cGRDQjBZV2";
-    eggvm.toolsFunc.setProtoArr.call(meta2, "parentNode", head);
+    // let meta1 = document.createElement("meta");
+    // let meta2 = document.createElement("meta");
+    // let head = document.createElement("head");
+    // meta2.content = "YVc1cGRDQjBZV2";
+    // eggvm.toolsFunc.setProtoArr.call(meta2, "parentNode", head);
+
 }();

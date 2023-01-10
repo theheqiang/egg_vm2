@@ -1,5 +1,5 @@
 // 获取原型环境代码
-getProtoEnvCode = function getProtoEnvCode(proto, instanceObj) {
+getProtoEnvCode = function getProtoEnvCode(proto, instanceObj){
     // proto: 原型函数
     // instanceObj: 实例对象, 可选参数
     let code = "";
@@ -8,9 +8,9 @@ getProtoEnvCode = function getProtoEnvCode(proto, instanceObj) {
     code += `// ${protoName}对象\r\n`;
     // 定义原型
     code += `${protoName} = function ${protoName}(){`;
-    try {
+    try{
         new proto;
-    } catch (e) {
+    }catch(e){
         code += `return eggvm.toolsFunc.throwError("${e.name}", "${e.message}")`;
     }
     code += `}\r\n`;
@@ -19,20 +19,20 @@ getProtoEnvCode = function getProtoEnvCode(proto, instanceObj) {
     // 设置原型链
     let protoObj = proto.prototype;
     let proto_protoName = Object.getPrototypeOf(protoObj)[Symbol.toStringTag];
-    if (proto_protoName !== undefined) {
+    if(proto_protoName !== undefined){
         code += `Object.setPrototypeOf(${protoName}.prototype, ${proto_protoName}.prototype);\r\n`;
     }
     // 设置原型的属性
-    for (const key in Object.getOwnPropertyDescriptors(proto)) {
-        if (key === "arguments" || key === "caller" || key === "length" || key === "name" || key === "prototype") {
+    for(const key in Object.getOwnPropertyDescriptors(proto)){
+        if(key === "arguments" || key === "caller" || key === "length" || key === "name" || key === "prototype"){
             continue;
         }
         let descriptor = getDescriptor(proto, key, protoName, protoName, instanceObj);
         code += `eggvm.toolsFunc.defineProperty(${protoName}, "${key}", ${descriptor});\r\n`;
     }
     // 设置原型对象的属性
-    for (const key in Object.getOwnPropertyDescriptors(proto.prototype)) {
-        if (key === "constructor") {
+    for(const key in Object.getOwnPropertyDescriptors(proto.prototype)){
+        if(key === "constructor"){
             continue;
         }
         let descriptor = getDescriptor(proto.prototype, key, `${protoName}.prototype`, protoName, instanceObj);
@@ -43,7 +43,7 @@ getProtoEnvCode = function getProtoEnvCode(proto, instanceObj) {
     // return code;
 }
 // 获取实例对象的环境代码
-getObjEnvCode = function getObjEnvCode(obj, objName, instanceObj) {
+getObjEnvCode = function getObjEnvCode(obj, objName, instanceObj){
     let code = "";
     // 添加注释
     code += `// ${objName}对象\r\n`;
@@ -51,10 +51,10 @@ getObjEnvCode = function getObjEnvCode(obj, objName, instanceObj) {
     code += `${objName} = {}\r\n`;
     // 设置原型
     let protoName = Object.getPrototypeOf(obj)[Symbol.toStringTag];
-    if (protoName !== undefined) {
+    if(protoName !== undefined){
         code += `Object.setPrototypeOf(${objName}, ${protoName}.prototype);\r\n`;
     }
-    for (const key in Object.getOwnPropertyDescriptors(obj)) {
+    for(const key in Object.getOwnPropertyDescriptors(obj)){
         let descriptor = getDescriptor(obj, key, objName, objName, instanceObj);
         code += `eggvm.toolsFunc.defineProperty(${objName}, "${key}", ${descriptor});\r\n`;
     }
@@ -63,60 +63,61 @@ getObjEnvCode = function getObjEnvCode(obj, objName, instanceObj) {
 }
 
 // 获取属性描述符
-getDescriptor = function getDescriptor(obj, prop, objName, protoName, instanceObj) {
+getDescriptor = function getDescriptor(obj, prop, objName, protoName, instanceObj){
     let descriptor = Object.getOwnPropertyDescriptor(obj, prop);
     let configurable = descriptor.configurable;
     let enumerable = descriptor.enumerable;
     let code = `{configurable:${configurable}, enumerable:${enumerable}, `;
-    if (descriptor.hasOwnProperty("writable")) {
+    if(descriptor.hasOwnProperty("writable")){
         let writable = descriptor.writable;
         code += `writable:${writable}, `;
     }
-    if (descriptor.hasOwnProperty("value")) {
+    if(descriptor.hasOwnProperty("value")){
         let value = descriptor.value;
-        if (typeof value === "object") {
-            // 需要关注
-            console.log("需要额外关注", value);
-            // JSON.stringify(value);
-            code += `value:{}`
-        } else if (typeof value === "function") {
-            code += `value:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}", arguments)}`;
-        } else if (typeof value === 'symbol') {
+        if(value instanceof Object){
+            if(typeof value === "function"){
+                code += `value:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}", arguments)}`;
+            }else{
+                // 需要关注
+                console.log("需要额外关注", value);
+                // JSON.stringify(value);
+                code += `value:{}`
+            }
+        }else if(typeof value === 'symbol'){
             code += `value:${value.toString()}`;
-        } else if (typeof value === "string") {
+        }else if(typeof value === "string"){
             code += `value:"${value}"`;
-        } else {
+        }else{
             code += `value:${value}`;
         }
     }
-    if (descriptor.hasOwnProperty("get")) {
+    if(descriptor.hasOwnProperty("get")){
         let get = descriptor.get;
-        if (typeof get === "function") {
+        if(typeof get === "function"){
             let defaultValue;
-            try {
+            try{
                 defaultValue = get.call(instanceObj);
-            } catch (e) {
-            }
-            if (defaultValue === undefined || defaultValue instanceof Object) {
+            }catch(e){}
+            if(defaultValue === undefined || defaultValue instanceof Object){
                 code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments)}, `;
-            } else {
-                if (typeof defaultValue === "string") {
+            }else{
+                if(typeof defaultValue === "string"){
                     code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, '${defaultValue}')}, `;
-                } else if (typeof value === 'symbol') {
+                }else if(typeof value === 'symbol'){
                     code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, ${defaultValue.toString()})}, `;
-                } else {
+                }else{
                     code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, ${defaultValue})}, `;
                 }
             }
-        } else {
+        }else{
             code += `get:undefined, `
         }
     }
-    if (descriptor.hasOwnProperty("set")) {
+    if(descriptor.hasOwnProperty("set")){
         let set = descriptor.set;
-        if (typeof set === "function") {
+        if(typeof set === "function"){
             code += `set:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_set", arguments)}`;
-        } else {
+        }else{
             code += `set:undefined`
         }
     }

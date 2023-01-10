@@ -12,4 +12,6 @@ eggvm.memory.symbolProxy = Symbol("proxy");// 独一无二的属性, 标记是�
 eggvm.memory.symbolData = Symbol("data");// 用来保存当前对象上的原型属性
 eggvm.memory.tag = []; // 内存，存储tag标签
 eggvm.memory.filterProxyProp =[eggvm.memory.symbolProxy,eggvm.memory.symbolData, "eval"];// 需要过滤的属性
+eggvm.memory.globalVar = {};// 存取全局变量
+eggvm.memory.globalVar.jsonCookie = {};// json格式的cookie
 
