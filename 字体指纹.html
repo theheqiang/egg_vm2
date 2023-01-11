@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>字体指纹</title>
+</head>
+<body>
+	<script>
+	let fonts = [];
+	let testFont = [
+		"SimHei",
+		"SimSun",
+		"NSimSun",
+		"FangSong",
+		"KaiTi",
+		"abc",
+		"lll",
+		"kkk",
+		"mmm",
+		"ttt"
+	];
+	let divTag = document.createElement("div");
+	divTag.innerHTML = '<span lang="zh" style="font-family:mmll;font-size:160px">fontTest</span>';
+	document.body.appendChild(divTag);
+	let span = divTag.children[0];
+	let w = span.offsetWidth;// 假字体得到的默认宽度
+	let h = span.offsetHeight;// 假字体得到的默认高度
+	for (let i = 0; i < testFont.length; i++) {
+		span.style.fontFamily = testFont[i];
+		if (w !== span.offsetWidth || h !== span.offsetHeight) {
+			fonts.push(testFont[i]);
+		}
+	}
+	let result = btoa(fonts.toString());
+	console.log(result);
+	document.body.removeChild(divTag);
+	</script>
+</body>
+
+</html>

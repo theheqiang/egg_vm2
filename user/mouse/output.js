@@ -12,13 +12,11 @@ eggvm.memory.symbolProxy = Symbol("proxy");// 独一无二的属性, 标记是�
 eggvm.memory.symbolData = Symbol("data");// 用来保存当前对象上的原型属性
 eggvm.memory.tag = []; // 内存，存储tag标签
 eggvm.memory.filterProxyProp =[eggvm.memory.symbolProxy,eggvm.memory.symbolData,Symbol.toPrimitive,Symbol.toStringTag, "eval"];// 需要过滤的属性
-eggvm.memory.asyncEvent = {};// 异步事件
 eggvm.memory.globalVar = {};// 存取全局变量
 eggvm.memory.globalVar.jsonCookie = {};// json格式的cookie
 eggvm.memory.globalVar.fontList = ["SimHei", "SimSun", "NSimSun", "FangSong", "KaiTi"]; // 浏览器能够识别的字体
+eggvm.memory.asyncEvent = {};
 eggvm.memory.globalVar.timeoutID = 0;
-eggvm.memory.globalVar.all = new ldObj();
-
 
 // 插件功能相关
 !function (){
@@ -687,11 +685,6 @@ eggvm.memory.globalVar.all = new ldObj();
 }();
 // 浏览器接口具体的实现
 !function (){
-    eggvm.envFunc.Document_all_get = function Document_all_get(){
-        let all = eggvm.memory.globalVar.all;
-        Object.setPrototypeOf(all, HTMLAllCollection.prototype);
-        return all;
-    }
     eggvm.envFunc.Event_timeStamp_get = function Event_timeStamp_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "timeStamp");
     }
@@ -1743,16 +1736,6 @@ eggvm.toolsFunc.defineProperty(HTMLMetaElement.prototype, "scheme", {configurabl
 HTMLSpanElement = function HTMLSpanElement(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
 eggvm.toolsFunc.safeProto(HTMLSpanElement, "HTMLSpanElement");
 Object.setPrototypeOf(HTMLSpanElement.prototype, HTMLElement.prototype);
-
-// HTMLStyleElement对象
-HTMLStyleElement = function HTMLStyleElement(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
-eggvm.toolsFunc.safeProto(HTMLStyleElement, "HTMLStyleElement");
-Object.setPrototypeOf(HTMLStyleElement.prototype, HTMLElement.prototype);
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "disabled", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "media", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "type", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "sheet", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "sheet_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "blocking", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_set", arguments)}});
 
 // Document对象
 Document = function Document(){}
@@ -3113,13 +3096,6 @@ eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "layerY", {configurable:tru
 eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "getModifierState", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "getModifierState", arguments)}});
 eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "initMouseEvent", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "initMouseEvent", arguments)}});
 
-// HTMLAllCollection对象
-HTMLAllCollection = function HTMLAllCollection(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
-eggvm.toolsFunc.safeProto(HTMLAllCollection, "HTMLAllCollection");
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "length", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "length_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "item", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "item", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "namedItem", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "namedItem", arguments)}});
-
 // window对象
 // 删除浏览器中不存在的对象
 delete global;
@@ -3128,7 +3104,6 @@ delete process;
 delete GLOBAL;
 delete root;
 delete VMError;
-delete ldObj;
 delete globalThis[Symbol.toStringTag];
 delete WindowProperties;
 window = globalThis;
@@ -3246,20 +3221,6 @@ eval = eggvm.toolsFunc.hook(eval, undefined, false, function (){},function (){})
         });
 
 }();
-// 网页变量初始化
-
-!function (){
-    // console.log(Date.now());// 1666689952666
-    // console.log(new Date().getTime());// 1666689952666
-    // console.log(Math.random());// 0.5
-
-    // let meta1 = document.createElement("meta");
-    // let meta2 = document.createElement("meta");
-    // let head = document.createElement("head");
-    // meta2.content = "YVc1cGRDQjBZV2";
-    // eggvm.toolsFunc.setProtoArr.call(meta2, "parentNode", head);
-    let body = document.createElement("body");
-}();
 // 需要代理的对象
 // window = new Proxy(window, {});
 localStorage = eggvm.toolsFunc.proxy(localStorage, "localStorage");
@@ -3267,53 +3228,3084 @@ sessionStorage = eggvm.toolsFunc.proxy(sessionStorage, "sessionStorage");
 location = eggvm.toolsFunc.proxy(location, "location");
 document = eggvm.toolsFunc.proxy(document, "document");
 window = eggvm.toolsFunc.proxy(window, "window");
-// 需要调试的代码
+
+;!(function(_0x316d91,_0x51e89d){function _0x456ea8(_0xd472eb,_0x469323,_0x59d977,_0x1b1d73,_0x2a2c94){return _0x5836(_0x2a2c94- -0x29f,_0x1b1d73);}function _0x30da82(_0x2a9e00,_0x4e44cf,_0x2c1b29,_0x5717a1,_0x138092){return _0x5836(_0x138092- -0x122,_0x2c1b29);}function _0x3a7d2b(_0x3a3ad6,_0x3f64a4,_0x398f27,_0x3a655c,_0x21aae5){return _0x5836(_0x398f27-0x2fe,_0x3f64a4);}function _0x360b4f(_0xeb1733,_0x35586f,_0x4ccfb5,_0x3313e8,_0x1e5ca4){return _0x5836(_0x35586f-0x29d,_0x1e5ca4);}function _0x2fc3ca(_0x3cf2be,_0x47bbf2,_0x1afb98,_0x1ed008,_0x3e760a){return _0x5836(_0x47bbf2- -0x327,_0x1afb98);}const _0x3ee553=_0x316d91();while(!![]){try{const _0xeba1f8=parseInt(_0x30da82(0x84,0x7e,0x93,0x92,0x8e))/(-0x1c60+-0x1507+0x3168)*(parseInt(_0x30da82(0x7f,0x68,0x9b,0x64,0x7f))/(-0x2ba*-0x1+-0x24c3*0x1+0xf9*0x23))+parseInt(_0x456ea8(-0xf6,-0x11d,-0x11c,-0x10d,-0x103))/(-0x2265+0x1489+0x1*0xddf)*(parseInt(_0x30da82(0xb3,0x76,0x72,0x82,0x90))/(-0x23*-0xb7+0x3e*-0x7f+0x5c1*0x1))+-parseInt(_0x456ea8(-0xec,-0x10c,-0xf5,-0x105,-0xec))/(0x1e16+0xf43+-0x2d54)+-parseInt(_0x456ea8(-0xf9,-0x13e,-0x137,-0x139,-0x119))/(0xd61*-0x1+0x2a5*-0x1+0x100c)*(parseInt(_0x456ea8(-0xd9,-0x102,-0xc3,-0xe0,-0xe5))/(0x1*-0x4a3+-0x23b+0x6e5))+parseInt(_0x360b4f(0x43e,0x437,0x420,0x413,0x44e))/(-0x1c31+0x1*0x73b+0x14fe*0x1)+-parseInt(_0x360b4f(0x429,0x417,0x40e,0x401,0x411))/(-0x907+-0x6*0x6e+0xba4)+-parseInt(_0x3a7d2b(0x4a4,0x4a7,0x4b2,0x4b2,0x4b0))/(0x2cc*0x7+0x3a1*-0x7+0x5dd);if(_0xeba1f8===_0x51e89d)break;else _0x3ee553['push'](_0x3ee553['shift']());}catch(_0x241332){_0x3ee553['push'](_0x3ee553['shift']());}}}(_0x3839,0xb*-0x22db5+0x5b80c+0x2*0x107132));const _0x5a28bc=(function(){const _0x810547={};_0x810547[_0x11a8fe(0x59a,0x59b,0x59b,0x57f,0x588)]=function(_0x30975d,_0x48c4f7){return _0x30975d!==_0x48c4f7;},_0x810547[_0x1e96bb(0x524,0x4ea,0x503,0x501,0x506)]=_0x1e96bb(0x536,0x540,0x536,0x52b,0x534);function _0x1b180a(_0x40a5a7,_0x462504,_0x197e5a,_0x419061,_0x15e4f9){return _0x5836(_0x40a5a7-0x4e,_0x197e5a);}function _0x303b09(_0x1ca840,_0x35fa49,_0x5d4c78,_0x7ccdc0,_0x1bbf3a){return _0x5836(_0x35fa49-0x1d2,_0x5d4c78);}_0x810547[_0x303b09(0x396,0x377,0x354,0x39a,0x36c)]=function(_0x2e35ed,_0x2d634a){return _0x2e35ed===_0x2d634a;},_0x810547[_0x11a8fe(0x59b,0x58c,0x593,0x584,0x581)]=_0x303b09(0x359,0x378,0x388,0x394,0x354);function _0x11a8fe(_0x4dcb80,_0x568a4e,_0x58d1b1,_0x4f8d30,_0x40606a){return _0x5836(_0x4dcb80-0x3df,_0x58d1b1);}_0x810547[_0x11a8fe(0x573,0x580,0x573,0x593,0x57f)]=function(_0x29651f,_0xa617cf){return _0x29651f===_0xa617cf;},_0x810547[_0x303b09(0x354,0x354,0x34c,0x378,0x378)]=_0x303b09(0x36c,0x363,0x36f,0x340,0x341),_0x810547[_0x11a8fe(0x57a,0x56f,0x56a,0x582,0x580)]=_0x1b180a(0x1c4,0x19f,0x1bb,0x1a4,0x1a9);function _0x1e96bb(_0x122850,_0x244944,_0xc97a79,_0x286246,_0x26c81f){return _0x5836(_0xc97a79-0x388,_0x122850);}const _0x28b1ff=_0x810547;let _0x32b5ee=!![];function _0x43671f(_0x210036,_0x23e2a1,_0x5989db,_0x390bb4,_0x38bc10){return _0x5836(_0x5989db-0x16,_0x23e2a1);}return function(_0x1fedda,_0x574065){function _0x5e38db(_0x42f02b,_0x4d59b8,_0x1df39c,_0x43eda2,_0x2fbc6e){return _0x43671f(_0x42f02b-0x9,_0x4d59b8,_0x43eda2- -0x1d6,_0x43eda2-0xed,_0x2fbc6e-0x132);}function _0x4c1fa4(_0x9e08d0,_0x3ccd67,_0x57eff9,_0x18d66a,_0x433194){return _0x1b180a(_0x433194- -0x116,_0x3ccd67-0x19a,_0x3ccd67,_0x18d66a-0x5c,_0x433194-0x179);}function _0x476276(_0x4c358c,_0x5a18f3,_0x3fea4a,_0x4a7291,_0x465494){return _0x1e96bb(_0x4a7291,_0x5a18f3-0xa,_0x3fea4a- -0x66a,_0x4a7291-0xe1,_0x465494-0x118);}function _0x248a16(_0xe3f75a,_0x7d2188,_0x5a2c94,_0x20c47e,_0x303955){return _0x43671f(_0xe3f75a-0x4a,_0x7d2188,_0x20c47e- -0x2c9,_0x20c47e-0x11f,_0x303955-0x125);}function _0x2f2bce(_0x402920,_0xca4359,_0x673b58,_0x5d0742,_0x53925a){return _0x303b09(_0x402920-0xb2,_0x673b58-0x1e8,_0x402920,_0x5d0742-0x59,_0x53925a-0x82);}if(_0x28b1ff[_0x5e38db(-0x34,-0x50,-0x21,-0x2c,-0x2a)](_0x28b1ff[_0x2f2bce(0x526,0x549,0x53c,0x53b,0x52c)],_0x28b1ff[_0x5e38db(-0x7,-0x2d,-0xa,-0x25,-0x3d)]))_0x45e4d2[_0x2f2bce(0x53e,0x557,0x563,0x544,0x54b)](_0x370183[_0x30e372][_0x5e38db(-0x18,-0x3a,-0x5,-0x22,-0x16)+'tX']),_0x5a168b[_0x4c1fa4(0xf1,0xe6,0xe9,0x104,0xe1)](_0x586906[_0x40ea26][_0x2f2bce(0x55b,0x57d,0x558,0x534,0x57b)+'tY']),_0x211492[_0x4c1fa4(0xf0,0xd9,0x100,0xf9,0xe1)](_0x1af739[_0x122e44][_0x2f2bce(0x532,0x54f,0x552,0x575,0x558)+_0x5e38db(-0x5c,-0x53,-0x36,-0x44,-0x24)]);else{const _0x4ba3f1=_0x32b5ee?function(){function _0x2b4d1f(_0x3e25f9,_0x6ce50c,_0x236034,_0x40091c,_0x416a58){return _0x2f2bce(_0x236034,_0x6ce50c-0x1c5,_0x3e25f9- -0x513,_0x40091c-0x108,_0x416a58-0x3b);}function _0x468d15(_0x266b2f,_0xdcc66,_0xcc39d2,_0x3f0161,_0x794082){return _0x476276(_0x266b2f-0x1a8,_0xdcc66-0x63,_0x794082-0x4bd,_0xdcc66,_0x794082-0x175);}function _0x310888(_0x2e242b,_0x3335bc,_0x1ca225,_0x10e571,_0x387c27){return _0x248a16(_0x2e242b-0xdd,_0x1ca225,_0x1ca225-0xb4,_0x10e571- -0x17,_0x387c27-0x165);}function _0x596557(_0x1a8bb3,_0x33c30d,_0x206c75,_0x9ae1e5,_0x3004d4){return _0x4c1fa4(_0x1a8bb3-0x5e,_0x33c30d,_0x206c75-0x150,_0x9ae1e5-0x8b,_0x206c75- -0x214);}function _0x3bfcf2(_0x4673ab,_0x11062f,_0x15533f,_0x50f8fe,_0x3c8ac4){return _0x2f2bce(_0x15533f,_0x11062f-0x66,_0x3c8ac4- -0x24f,_0x50f8fe-0x65,_0x3c8ac4-0xbb);}if(_0x28b1ff[_0x468d15(0x393,0x397,0x3bb,0x3a4,0x396)](_0x28b1ff[_0x596557(-0x168,-0x13c,-0x161,-0x15b,-0x178)],_0x28b1ff[_0x3bfcf2(0x2e1,0x2d4,0x2c8,0x2c2,0x2e6)]))_0x12fe56[_0x468d15(0x39a,0x394,0x386,0x3a3,0x384)](_0x86b218);else{if(_0x574065){if(_0x28b1ff[_0x596557(-0x134,-0x135,-0x137,-0x140,-0x123)](_0x28b1ff[_0x2b4d1f(0x63,0x70,0x4e,0x60,0x5c)],_0x28b1ff[_0x2b4d1f(0x63,0x62,0x4e,0x61,0x49)])){const _0x41ecb7=_0x574065[_0x310888(-0x161,-0x142,-0x13a,-0x153,-0x149)](_0x1fedda,arguments);return _0x574065=null,_0x41ecb7;}else _0x1d47c7[_0x2b4d1f(0x50,0x75,0x6d,0x62,0x38)](_0x1410b0[_0x3f33e5]);}}}:function(){};return _0x32b5ee=![],_0x4ba3f1;}};}()),_0xe4e16c=_0x5a28bc(this,function(){function _0x14c4cf(_0x1d0a79,_0x1b4796,_0x5dcb0e,_0x161f99,_0x3fb045){return _0x5836(_0x3fb045-0x12c,_0x1d0a79);}const _0x2909b3={};function _0x4bb7db(_0x524a18,_0x477dd5,_0x5faf1c,_0x229926,_0x2d6796){return _0x5836(_0x5faf1c-0x30a,_0x229926);}function _0x6f5e5b(_0x4f1e9e,_0x11e2a9,_0x45e926,_0xc71a28,_0x29816d){return _0x5836(_0x45e926-0x1f7,_0x4f1e9e);}_0x2909b3[_0x3840c2(0x18e,0x196,0x169,0x19b,0x17a)]=_0x2c9370(0x512,0x52f,0x54b,0x524,0x53d)+_0x4bb7db(0x4b1,0x49b,0x4b7,0x4b8,0x4b3)+'+$';const _0x3ec2c1=_0x2909b3;function _0x3840c2(_0x297a0d,_0x3a9186,_0x3f169c,_0x13a787,_0x2e716a){return _0x5836(_0x2e716a- -0x18,_0x3f169c);}function _0x2c9370(_0x193b78,_0x136576,_0x17aef8,_0x590242,_0x5abf0e){return _0x5836(_0x136576-0x3ba,_0x193b78);}return _0xe4e16c[_0x3840c2(0x188,0x18a,0x188,0x16f,0x173)+_0x14c4cf(0x2aa,0x2a9,0x28a,0x2bd,0x2ab)]()[_0x3840c2(0x1a5,0x1ab,0x166,0x1ab,0x188)+'h'](_0x3ec2c1[_0x4bb7db(0x4b9,0x499,0x49c,0x477,0x49a)])[_0x4bb7db(0x4a4,0x488,0x495,0x4b1,0x470)+_0x3840c2(0x188,0x168,0x154,0x17c,0x167)]()[_0x14c4cf(0x2b7,0x2d1,0x2d0,0x2e8,0x2c9)+_0x2c9370(0x547,0x566,0x54a,0x550,0x584)+'r'](_0xe4e16c)[_0x14c4cf(0x2ae,0x2ec,0x2c5,0x2d0,0x2cc)+'h'](_0x3ec2c1[_0x6f5e5b(0x390,0x383,0x389,0x381,0x36e)]);});_0xe4e16c(),console[_0x520a05(-0x43,-0x40,-0x1e,-0x29,-0x11)](_0x520a05(0x1c,0x10,-0x12,0x2,0x5)+_0x4145d0(0x564,0x55d,0x546,0x567,0x552));let list=[];function _0x520a05(_0x35e0fa,_0x403b0f,_0x49a010,_0x595adb,_0x1b3fa8){return _0x5836(_0x595adb- -0x1b6,_0x403b0f);}function _0x3839(){const _0x47e311=['10981EhACuU','nwEhg','1052JmBGQX','5802780TgjSyF','2636990OWFuMb','entLi','RixAn','同步代码执','同步代码开','IlffM','35iAyjUQ','vTThv','dlbKk','wzBOD','VjitH','(((.+','zqNCe','apply','网页加载完','RPMJJ','877896QRxVRJ','dQrPv','tamp','VUvzd','DxkLB','ing','mouse','down','GlyZh','addEv','move','cIuRe','124926YliLqP','行完成','stene','BmSZV','etTim','toStr','sqMiQ','log','iisQs','lengt','load','SSJtR','fCBuU','unloa','ogSVP','cvEXL','GfIWB','正在执行s','timeS','efVXS','6131992ROMBIL','JFQwd','4839EIjumz','const','clien','goaMO','searc','254JSeRSq','网页卸载完','LHbHZ','调函数','sejjY','MIddM','uDGmB','UJzus','push','CQIjt','始执行','ructo',')+)+)','rdgEO','eout回'];_0x3839=function(){return _0x47e311;};return _0x3839();}function _0x61ee82(_0x25e5f0,_0x69d79c,_0xf51956,_0x219fbb,_0x809bd4){return _0x5836(_0xf51956- -0xe2,_0x69d79c);}let encodeFunc=function encodeFunc(_0x1f8e6b){const _0x1073ef={'DxkLB':function(_0x32fbd0,_0x463655){return _0x32fbd0<_0x463655;},'RPMJJ':function(_0x232cde,_0x379cbb){return _0x232cde===_0x379cbb;},'cvEXL':_0x109060(0xf7,0xcf,0xec,0xdd,0xc8),'LHbHZ':function(_0x188396,_0x1fc29f){return _0x188396(_0x1fc29f);}};function _0x109060(_0x5978dc,_0x325b61,_0x2cc9e7,_0x41113e,_0x159e5b){return _0x4145d0(_0x5978dc-0xad,_0x2cc9e7- -0x465,_0x41113e,_0x41113e-0x11e,_0x159e5b-0x163);}let _0xf377df=[];for(let _0x330f48=-0x1131+-0x1ee2+-0x1f*-0x18d;_0x1073ef[_0x109060(0xee,0xed,0xcb,0xd4,0xc2)](_0x330f48,-0xba*-0x1f+0x1976*-0x1+0x2fa);_0x330f48++){if(_0x1073ef[_0x109060(0xe1,0xa7,0xc6,0xa6,0xb0)](_0x1073ef[_0x4f13ed(-0xd1,-0xc9,-0xde,-0xd6,-0xc1)],_0x1073ef[_0x238949(-0xf8,-0xfd,-0x111,-0x115,-0xfc)]))_0xf377df[_0x281ae2(0x551,0x524,0x52c,0x536,0x52a)](_0x1f8e6b[_0x330f48][_0x238949(-0xef,-0xd6,-0x10c,-0xf3,-0xe9)+'tX']),_0xf377df[_0x238949(-0xe4,-0xf0,-0xf8,-0xc8,-0xd9)](_0x1f8e6b[_0x330f48][_0x281ae2(0x51d,0x540,0x517,0x52b,0x52c)+'tY']),_0xf377df[_0x4f13ed(-0x91,-0xc5,-0xc9,-0xc3,-0xad)](_0x1f8e6b[_0x330f48][_0x3248c1(0x19a,0x182,0x19f,0x1bd,0x199)+_0x109060(0xd0,0xeb,0xc9,0xb3,0xe0)]);else{const _0x39d5b1=_0x344b19?function(){function _0x336cc0(_0xc1d63d,_0x23076c,_0x157e2b,_0x3a9990,_0xb5a3ff){return _0x238949(_0xb5a3ff-0x3e5,_0x23076c,_0x157e2b-0x13a,_0x3a9990-0x178,_0xb5a3ff-0x94);}if(_0x2f44eb){const _0x97c468=_0x5cbb8e[_0x336cc0(0x2ba,0x2e0,0x2ec,0x2b0,0x2cf)](_0x24ee6f,arguments);return _0x174da6=null,_0x97c468;}}:function(){};return _0x3bd139=![],_0x39d5b1;}}function _0x3248c1(_0x5187ac,_0x30b0f5,_0x311b60,_0x45918a,_0x12c575){return _0x520a05(_0x5187ac-0x7d,_0x30b0f5,_0x311b60-0xa0,_0x311b60-0x1bd,_0x12c575-0x1bf);}let _0x1bc7a8=_0x1073ef[_0x238949(-0xea,-0xd2,-0xfa,-0xef,-0xd6)](btoa,_0xf377df[_0x281ae2(0x4fe,0x524,0x521,0x518,0x4f9)+_0x281ae2(0x50b,0x50e,0x4ea,0x50c,0x529)]());function _0x238949(_0x4c8192,_0x483425,_0x4609df,_0x200479,_0x9ea44d){return _0x4145d0(_0x4c8192-0xe,_0x4c8192- -0x63f,_0x483425,_0x200479-0x18d,_0x9ea44d-0x116);}function _0x4f13ed(_0x30ae89,_0x3e5e29,_0x157b7c,_0x369643,_0x532cf1){return _0x520a05(_0x30ae89-0x16c,_0x157b7c,_0x157b7c-0x69,_0x532cf1- -0xa0,_0x532cf1-0x142);}function _0x281ae2(_0x653a13,_0x2730e7,_0x122764,_0x5e1a5a,_0x12dee5){return _0x1a42e0(_0x5e1a5a-0x14c,_0x12dee5,_0x122764-0x199,_0x5e1a5a-0x24,_0x12dee5-0x1d5);}console[_0x4f13ed(-0xdb,-0xb2,-0xae,-0xbe,-0xc9)](_0x1bc7a8);},mousemoveFunc=function mousemoveFunc(_0x528b54){function _0x45a902(_0x299443,_0x30f4c1,_0x4c8944,_0x48fc26,_0x1eac7f){return _0x1a42e0(_0x4c8944- -0x360,_0x1eac7f,_0x4c8944-0x180,_0x48fc26-0x1c3,_0x1eac7f-0x13c);}list[_0x45a902(0x9d,0xa8,0x8a,0x94,0xa5)](_0x528b54);},mousedownFunc=function mousedownFunc(_0x3adb1d){function _0xfa2a22(_0x34894a,_0x30e686,_0xff4bb6,_0x4fa9af,_0x54dd49){return _0x1a42e0(_0xff4bb6- -0x73,_0x30e686,_0xff4bb6-0x1a0,_0x4fa9af-0xaf,_0x54dd49-0x1c3);}list[_0xfa2a22(0x395,0x385,0x377,0x377,0x35a)](_0x3adb1d);},mouseupFunc=function mouseupFunc(_0x30240c){const _0x471a85={'uDGmB':_0x14a934(0x493,0x4a0,0x45c,0x49c,0x47d)+_0x14a934(0x4b1,0x4cf,0x4aa,0x4ba,0x4b5)+'+$','BmSZV':function(_0x5cd2f6,_0x14f9e1){return _0x5cd2f6-_0x14f9e1;},'VUvzd':function(_0x575f33,_0x357d12){return _0x575f33<_0x357d12;},'sqMiQ':function(_0x2253aa,_0x2450f2){return _0x2253aa===_0x2450f2;},'RixAn':_0x14a934(0x4c5,0x4c4,0x4a9,0x4d5,0x4b0),'CQIjt':_0x14a934(0x4aa,0x4b5,0x485,0x4b3,0x4a1),'nwEhg':function(_0x4ba1ac,_0x5bc709){return _0x4ba1ac(_0x5bc709);}};function _0x24e14a(_0x809d3c,_0x317db1,_0x3acb18,_0x10b9de,_0x2e1ffb){return _0x520a05(_0x809d3c-0x65,_0x2e1ffb,_0x3acb18-0x140,_0x10b9de-0xa6,_0x2e1ffb-0x191);}function _0x2317b4(_0x2847a1,_0x142647,_0x20d660,_0x1b2c73,_0x2c4e04){return _0x4145d0(_0x2847a1-0xc8,_0x1b2c73- -0x2dc,_0x20d660,_0x1b2c73-0x6c,_0x2c4e04-0xc);}function _0x200190(_0x5ba493,_0x596b51,_0x3f8439,_0x513f5b,_0x273618){return _0x520a05(_0x5ba493-0x150,_0x5ba493,_0x3f8439-0x133,_0x3f8439- -0x1dd,_0x273618-0x1c9);}function _0x14a934(_0x320c66,_0x17e7dc,_0x9d144c,_0x15786d,_0x2ec20d){return _0x520a05(_0x320c66-0x1df,_0x9d144c,_0x9d144c-0x1bc,_0x2ec20d-0x4be,_0x2ec20d-0x158);}list[_0x4b1a30(-0x1bd,-0x1ba,-0x1a5,-0x1d1,-0x1db)](_0x30240c);function _0x4b1a30(_0x55109e,_0x5288fe,_0x581c6c,_0x180f53,_0x71596d){return _0x4145d0(_0x55109e-0x36,_0x55109e- -0x718,_0x71596d,_0x180f53-0x1d4,_0x71596d-0x13d);}let _0x2c1655=list[_0x2317b4(0x269,0x27e,0x24e,0x265,0x263)+'h'],_0x3c19d2=[];for(let _0xada1f6=_0x471a85[_0x2317b4(0x260,0x273,0x256,0x25f,0x26c)](_0x2c1655,-0x91b+-0xd*-0x209+-0x1150);_0x471a85[_0x14a934(0x49b,0x469,0x462,0x49a,0x485)](_0xada1f6,_0x2c1655);_0xada1f6++){if(_0x471a85[_0x2317b4(0x24a,0x258,0x270,0x262,0x287)](_0x471a85[_0x24e14a(0x92,0x95,0xaa,0xa6,0x8b)],_0x471a85[_0x200190(-0x1e6,-0x1ea,-0x1e9,-0x1c9,-0x1f5)]))return _0x42bce8[_0x200190(-0x21c,-0x1ee,-0x208,-0x21b,-0x215)+_0x4b1a30(-0x1e7,-0x1e1,-0x201,-0x1e5,-0x1f1)]()[_0x2317b4(0x25a,0x266,0x268,0x276,0x27d)+'h'](NqcLBe[_0x14a934(0x4c0,0x4ba,0x4c3,0x4a7,0x4af)])[_0x24e14a(0x9d,0x6f,0x7e,0x7b,0x56)+_0x4b1a30(-0x1e7,-0x1d7,-0x1e9,-0x1e3,-0x1d2)]()[_0x4b1a30(-0x1c9,-0x1cd,-0x1df,-0x1b7,-0x1b9)+_0x24e14a(0x8f,0x8f,0x8d,0x9c,0x9d)+'r'](_0xe9d4ce)[_0x4b1a30(-0x1c6,-0x1c0,-0x1b5,-0x1d1,-0x1e1)+'h'](NqcLBe[_0x2317b4(0x286,0x27a,0x262,0x27d,0x26b)]);else _0x3c19d2[_0x4b1a30(-0x1bd,-0x1ce,-0x1a7,-0x1ca,-0x199)](list[_0xada1f6]);}_0x471a85[_0x200190(-0x1bf,-0x1bf,-0x1e2,-0x1e9,-0x1c7)](encodeFunc,_0x3c19d2);},setTimeoutcallBack=function setTimeoutcallBack(){const _0x56d7ba={};_0x56d7ba[_0x5844cf(-0x107,-0xf9,-0xfc,-0xde,-0x11b)]=_0x5844cf(-0xe9,-0xf8,-0xf2,-0xfd,-0x111)+_0x374412(0x4b2,0x4ba,0x4c5,0x4df,0x4ad)+_0x50b408(-0x146,-0x14e,-0x15f,-0x174,-0x13b)+_0x374412(0x4e8,0x4d4,0x4bc,0x4ed,0x4ee),_0x56d7ba[_0x45d5dd(0x187,0x18d,0x187,0x19f,0x181)]=_0x374412(0x4ab,0x4b0,0x4af,0x494,0x4cd)+_0x5e5a85(0x2d7,0x2e4,0x311,0x2fb,0x320),_0x56d7ba[_0x45d5dd(0x17c,0x172,0x18b,0x172,0x1a0)]=_0x50b408(-0x181,-0x1a4,-0x18e,-0x189,-0x1a1)+_0x5e5a85(0x2f4,0x2e9,0x308,0x2f8,0x2d9),_0x56d7ba[_0x45d5dd(0x181,0x179,0x18c,0x175,0x1a8)]=_0x5844cf(-0xf2,-0x10f,-0xeb,-0x120,-0xef)+'up';function _0x45d5dd(_0x1d0a2d,_0x49753e,_0x149bc0,_0xf184c0,_0x148843){return _0x1a42e0(_0x149bc0- -0x273,_0x148843,_0x149bc0-0x1bf,_0xf184c0-0x87,_0x148843-0xee);}function _0x50b408(_0x16d7be,_0x53a8f9,_0x421627,_0x502b54,_0x2d2e39){return _0x520a05(_0x16d7be-0x1cd,_0x16d7be,_0x421627-0xa7,_0x421627- -0x158,_0x2d2e39-0x37);}function _0x5e5a85(_0x3d0be7,_0x1270ae,_0xd4999f,_0x5ea71e,_0x2d0670){return _0x4145d0(_0x3d0be7-0x42,_0x5ea71e- -0x23b,_0xd4999f,_0x5ea71e-0x1a0,_0x2d0670-0x22);}const _0x513fd3=_0x56d7ba;console[_0x45d5dd(0x142,0x163,0x15b,0x156,0x13e)](_0x513fd3[_0x5e5a85(0x2f8,0x30d,0x330,0x30d,0x2f5)]);function _0x5844cf(_0x5978e6,_0x3949cf,_0x17f51e,_0x38b2aa,_0x498b09){return _0x4145d0(_0x5978e6-0x150,_0x3949cf- -0x641,_0x5978e6,_0x38b2aa-0x4f,_0x498b09-0x9d);}function _0x374412(_0x4258a8,_0x79705d,_0x2fed1d,_0x451350,_0x1b3a0d){return _0x520a05(_0x4258a8-0xc2,_0x4258a8,_0x2fed1d-0xe6,_0x79705d-0x4e6,_0x1b3a0d-0xef);}document[_0x374412(0x4a1,0x4b3,0x4c4,0x4d7,0x494)+_0x45d5dd(0x18e,0x165,0x183,0x174,0x1a6)+_0x374412(0x4a3,0x4b8,0x4d3,0x4d0,0x4b9)+'r'](_0x513fd3[_0x374412(0x4f8,0x4e9,0x4fc,0x4d0,0x505)],mousemoveFunc),document[_0x5e5a85(0x315,0x30f,0x310,0x2fa,0x30f)+_0x45d5dd(0x188,0x199,0x183,0x17c,0x1a7)+_0x45d5dd(0x178,0x14c,0x156,0x161,0x15b)+'r'](_0x513fd3[_0x45d5dd(0x182,0x1a6,0x18b,0x16b,0x18a)],mousedownFunc),document[_0x374412(0x49b,0x4b3,0x4a3,0x4ca,0x491)+_0x45d5dd(0x190,0x185,0x183,0x167,0x167)+_0x5e5a85(0x2da,0x30b,0x300,0x2ff,0x30a)+'r'](_0x513fd3[_0x5844cf(-0xbb,-0xd1,-0xcf,-0xc2,-0xe5)],mouseupFunc);},unloadFunc=function unloadFunc(){const _0x7b0e77={};_0x7b0e77[_0x1936b3(0x70,0x82,0x7e,0x5c,0x6a)]=_0x16421d(0x56c,0x588,0x5ad,0x58f,0x575)+'成';function _0x31a5e8(_0x295315,_0x53fc3f,_0x718f85,_0x25e50b,_0x1dcb80){return _0x4145d0(_0x295315-0x131,_0x295315- -0x14e,_0x25e50b,_0x25e50b-0x91,_0x1dcb80-0x1b1);}function _0x16421d(_0xda606d,_0x414a8f,_0x3afbf7,_0x5f446b,_0x492f90){return _0x4145d0(_0xda606d-0xe,_0x414a8f-0x34,_0x5f446b,_0x5f446b-0x83,_0x492f90-0x13d);}const _0x5f29c3=_0x7b0e77;function _0x428895(_0x3a1efe,_0x4b356b,_0x220fda,_0x428e20,_0x562152){return _0x1a42e0(_0x562152- -0x59e,_0x4b356b,_0x220fda-0x14e,_0x428e20-0x183,_0x562152-0x48);}function _0x1936b3(_0x40c20c,_0x47d5d3,_0x2fb2f3,_0x5e4105,_0x2632a6){return _0x1a42e0(_0x2632a6- -0x365,_0x5e4105,_0x2fb2f3-0x6d,_0x5e4105-0x11b,_0x2632a6-0x30);}console[_0x428895(-0x1f3,-0x1e4,-0x1ce,-0x1c6,-0x1d0)](_0x5f29c3[_0x428895(-0x1d9,-0x1d3,-0x1ed,-0x1e0,-0x1cf)]);debugger;},loadFunc=function loadFunc(){function _0x5eb7df(_0x20bae1,_0x3d8cff,_0x5d5547,_0x28f28c,_0x1326a7){return _0x520a05(_0x20bae1-0x181,_0x5d5547,_0x5d5547-0x167,_0x3d8cff-0x100,_0x1326a7-0x1cd);}const _0x2a1b1e={};_0x2a1b1e[_0x3cdc97(0x372,0x35e,0x368,0x36a,0x34d)]=_0x3cdc97(0x33a,0x357,0x347,0x35d,0x33e)+'成';function _0x59b070(_0x1ccfec,_0x11c234,_0x4f3502,_0x41ae6c,_0x57eb8f){return _0x4145d0(_0x1ccfec-0x51,_0x11c234- -0x2cd,_0x41ae6c,_0x41ae6c-0x71,_0x57eb8f-0xde);}function _0x3cdc97(_0x4fa55d,_0x483cda,_0x3b52d9,_0x1f7c1b,_0xa71081){return _0x520a05(_0x4fa55d-0x173,_0x4fa55d,_0x3b52d9-0x150,_0x1f7c1b-0x39b,_0xa71081-0x1e0);}function _0x2d8c22(_0x46d98c,_0x175951,_0x3009f3,_0x286de0,_0x53c873){return _0x1a42e0(_0x53c873- -0x20f,_0x3009f3,_0x3009f3-0x1b1,_0x286de0-0xb4,_0x53c873-0x167);}const _0x4c144d=_0x2a1b1e;console[_0x5eb7df(0xe1,0xd7,0xdf,0xf7,0xc9)](_0x4c144d[_0x5eb7df(0xb4,0xcf,0xd9,0xae,0xf4)]);};function _0x4145d0(_0x5c6b49,_0x323306,_0x2ccfff,_0x33e1a9,_0x5a8ed3){return _0x5836(_0x323306-0x3b2,_0x2ccfff);}function _0x13d4e0(_0x3edad1,_0x11f441,_0x2f699e,_0x2336ca,_0x3e5f00){return _0x5836(_0x2336ca- -0x365,_0x3edad1);}setTimeout(setTimeoutcallBack,0x1f1f+-0x1c01+-0x6*0x85);function _0x1a42e0(_0x8b6552,_0x1f246f,_0x3b8fad,_0x44fa10,_0x42c01e){return _0x5836(_0x8b6552-0x241,_0x1f246f);}function _0x5836(_0x29b75b,_0x4a11cf){const _0x9a114a=_0x3839();return _0x5836=function(_0x45bd07,_0x3a9c09){_0x45bd07=_0x45bd07-(-0x278*0xb+0x1*-0x167f+0x1*0x331c);let _0x2b0300=_0x9a114a[_0x45bd07];return _0x2b0300;},_0x5836(_0x29b75b,_0x4a11cf);}window[_0x520a05(-0x1b,-0x28,-0x3b,-0x33,-0x2f)+_0x4145d0(0x55f,0x567,0x587,0x579,0x544)+_0x4145d0(0x534,0x53a,0x53c,0x51f,0x53f)+'r'](_0x13d4e0(-0x1d7,-0x1ec,-0x1d8,-0x1d5,-0x1ef),loadFunc),window[_0x520a05(-0x4f,-0x13,-0x4a,-0x33,-0x17)+_0x4145d0(0x575,0x567,0x589,0x586,0x544)+_0x4145d0(0x533,0x53a,0x556,0x535,0x54c)+'r'](_0x1a42e0(0x3d4,0x3e3,0x3d3,0x3f4,0x3c9)+'d',unloadFunc),console[_0x13d4e0(-0x1d7,-0x1bf,-0x1df,-0x1d8,-0x1d8)](_0x61ee82(0xc6,0xd6,0xd5,0xb1,0xc1)+_0x13d4e0(-0x1fc,-0x1ba,-0x1f0,-0x1de,-0x1e6));
 
 debugger;
-// 函数的入参
-// 函数的返回值
-// 执行这个函数对全局产生的影响
-// document.cookie = "aaaa";
-// console.log(document.cookie);
-// document.cookie = "a=1";
-// console.log(document.cookie);
-// document.cookie = "a=10";
-// console.log(document.cookie);
-// document.cookie = "b=20";
-// console.log(document.cookie);
-// debugger;
-// debugger;
-// navigator.plugins.item(0);
-// navigator.plugins.namedItem("Chrome PDF Viewer");
-// navigator.plugins[0].item(0);
-// navigator.plugins[0].namedItem("application/pdf");
-// navigator.mimeTypes.item(0);
-// navigator.mimeTypes.namedItem("application/pdf");
 
-// console.log("开始执行同步代码");// 1
-// function loadFunc(){
-//     console.log("正在执行load事件");//3
-// }
-// window.addEventListener("load", loadFunc);
-// console.log("结束执行同步代码");//2
-
-// 实现环境功能
-// mdn 查询函数的用法
-//
-
-// 入参
-// 返回值
-// this对象
-// 对全局对象产生影响
-
-
+let loadEvent = eggvm.memory.asyncEvent.listener["load"];
+for(let i=0;i<loadEvent.length;i++){
+    let self = loadEvent[i].self;
+    let callBack = loadEvent[i].listener;
+    callBack.call(self);
+}
+let setTimeoutFunc = eggvm.memory.asyncEvent.setTimeout;
+for(let i=0;i<setTimeoutFunc.length;i++){
+    let callBack = setTimeoutFunc[i].callback;
+    callBack()
+}
 debugger;
-// 异步执行的代码
 
-// let loadEventList = eggvm.memory.asyncEvent.listener["load"];
-// for(let i=0;i<loadEventList.length;i++){
-//     let loadEvent = loadEventList[i];
-//     let self = loadEvent.self;
-//     let listener = loadEvent.listener;
-//     listener.call(self);
-// }
+let mouseEvent = [
+    {
+        "clientX": 464,
+        "clientY": 481,
+        "timeStamp": 7780.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 445,
+        "clientY": 475,
+        "timeStamp": 7788.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 433,
+        "clientY": 471,
+        "timeStamp": 7795.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 423,
+        "clientY": 465,
+        "timeStamp": 7804,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 415,
+        "clientY": 459,
+        "timeStamp": 7811.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 410,
+        "clientY": 450,
+        "timeStamp": 7820,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 402,
+        "clientY": 440,
+        "timeStamp": 7827.5999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 395,
+        "clientY": 428,
+        "timeStamp": 7835.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 387,
+        "clientY": 410,
+        "timeStamp": 7844.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 375,
+        "clientY": 389,
+        "timeStamp": 7852.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 361,
+        "clientY": 365,
+        "timeStamp": 7859.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 346,
+        "clientY": 341,
+        "timeStamp": 7868.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 332,
+        "clientY": 316,
+        "timeStamp": 7875.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 317,
+        "clientY": 292,
+        "timeStamp": 7883.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 305,
+        "clientY": 269,
+        "timeStamp": 7892.5999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 296,
+        "clientY": 249,
+        "timeStamp": 7899.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 289,
+        "clientY": 231,
+        "timeStamp": 7908.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 286,
+        "clientY": 218,
+        "timeStamp": 7916.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 284,
+        "clientY": 206,
+        "timeStamp": 7924,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 283,
+        "clientY": 194,
+        "timeStamp": 7932.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 283,
+        "clientY": 187,
+        "timeStamp": 7939.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 283,
+        "clientY": 178,
+        "timeStamp": 7948.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 285,
+        "clientY": 172,
+        "timeStamp": 7956,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 289,
+        "clientY": 167,
+        "timeStamp": 7964.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 295,
+        "clientY": 163,
+        "timeStamp": 7972.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 302,
+        "clientY": 159,
+        "timeStamp": 7979.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 310,
+        "clientY": 156,
+        "timeStamp": 7989.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 320,
+        "clientY": 155,
+        "timeStamp": 7998,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 330,
+        "clientY": 155,
+        "timeStamp": 8004,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 340,
+        "clientY": 157,
+        "timeStamp": 8013.5999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 352,
+        "clientY": 162,
+        "timeStamp": 8020.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 364,
+        "clientY": 173,
+        "timeStamp": 8027.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 378,
+        "clientY": 188,
+        "timeStamp": 8035.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 388,
+        "clientY": 206,
+        "timeStamp": 8043.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 395,
+        "clientY": 226,
+        "timeStamp": 8053.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 397,
+        "clientY": 244,
+        "timeStamp": 8060.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 396,
+        "clientY": 259,
+        "timeStamp": 8068.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 390,
+        "clientY": 274,
+        "timeStamp": 8075.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 377,
+        "clientY": 291,
+        "timeStamp": 8083.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 362,
+        "clientY": 305,
+        "timeStamp": 8094.5999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 338,
+        "clientY": 317,
+        "timeStamp": 8100.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 313,
+        "clientY": 328,
+        "timeStamp": 8108.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 283,
+        "clientY": 337,
+        "timeStamp": 8116.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 252,
+        "clientY": 340,
+        "timeStamp": 8123.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 221,
+        "clientY": 342,
+        "timeStamp": 8132.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 190,
+        "clientY": 339,
+        "timeStamp": 8139.9000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 161,
+        "clientY": 333,
+        "timeStamp": 8148.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 141,
+        "clientY": 324,
+        "timeStamp": 8156.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 124,
+        "clientY": 312,
+        "timeStamp": 8164.4000000003725,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 113,
+        "clientY": 299,
+        "timeStamp": 8172.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 101,
+        "clientY": 280,
+        "timeStamp": 8180.0999999996275,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 94,
+        "clientY": 258,
+        "timeStamp": 8188.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 91,
+        "clientY": 235,
+        "timeStamp": 8197,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 93,
+        "clientY": 209,
+        "timeStamp": 8203.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 101,
+        "clientY": 185,
+        "timeStamp": 8212.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 117,
+        "clientY": 160,
+        "timeStamp": 8219.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 140,
+        "clientY": 141,
+        "timeStamp": 8227.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 126,
+        "timeStamp": 8235.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 192,
+        "clientY": 116,
+        "timeStamp": 8243.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 218,
+        "clientY": 112,
+        "timeStamp": 8251.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 243,
+        "clientY": 112,
+        "timeStamp": 8259.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 264,
+        "clientY": 116,
+        "timeStamp": 8267.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 287,
+        "clientY": 125,
+        "timeStamp": 8276.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 304,
+        "clientY": 140,
+        "timeStamp": 8283.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 318,
+        "clientY": 161,
+        "timeStamp": 8292.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 328,
+        "clientY": 192,
+        "timeStamp": 8299.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 334,
+        "clientY": 228,
+        "timeStamp": 8307.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 333,
+        "clientY": 267,
+        "timeStamp": 8315.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 324,
+        "clientY": 307,
+        "timeStamp": 8323.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 343,
+        "timeStamp": 8331.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 292,
+        "clientY": 373,
+        "timeStamp": 8339.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 270,
+        "clientY": 396,
+        "timeStamp": 8347.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 248,
+        "clientY": 413,
+        "timeStamp": 8356.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 227,
+        "clientY": 426,
+        "timeStamp": 8363.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 207,
+        "clientY": 433,
+        "timeStamp": 8371.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 194,
+        "clientY": 435,
+        "timeStamp": 8380.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 187,
+        "clientY": 435,
+        "timeStamp": 8387.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 180,
+        "clientY": 435,
+        "timeStamp": 8396.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 175,
+        "clientY": 430,
+        "timeStamp": 8406,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 170,
+        "clientY": 419,
+        "timeStamp": 8411.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 401,
+        "timeStamp": 8419.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 161,
+        "clientY": 378,
+        "timeStamp": 8427.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 160,
+        "clientY": 347,
+        "timeStamp": 8436.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 162,
+        "clientY": 311,
+        "timeStamp": 8444.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 277,
+        "timeStamp": 8453.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 178,
+        "clientY": 242,
+        "timeStamp": 8460.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 194,
+        "clientY": 210,
+        "timeStamp": 8467.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 211,
+        "clientY": 183,
+        "timeStamp": 8476,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 231,
+        "clientY": 166,
+        "timeStamp": 8483.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 249,
+        "clientY": 155,
+        "timeStamp": 8492.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 266,
+        "clientY": 150,
+        "timeStamp": 8501.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 279,
+        "clientY": 148,
+        "timeStamp": 8508,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 290,
+        "clientY": 151,
+        "timeStamp": 8515.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 303,
+        "clientY": 159,
+        "timeStamp": 8524.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 318,
+        "clientY": 179,
+        "timeStamp": 8532.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 335,
+        "clientY": 213,
+        "timeStamp": 8540.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 349,
+        "clientY": 251,
+        "timeStamp": 8547.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 357,
+        "clientY": 291,
+        "timeStamp": 8556.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 357,
+        "clientY": 329,
+        "timeStamp": 8564.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 352,
+        "clientY": 374,
+        "timeStamp": 8571.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 341,
+        "clientY": 409,
+        "timeStamp": 8580.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 326,
+        "clientY": 438,
+        "timeStamp": 8588.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 306,
+        "clientY": 461,
+        "timeStamp": 8595.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 289,
+        "clientY": 475,
+        "timeStamp": 8603.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 268,
+        "clientY": 486,
+        "timeStamp": 8611.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 252,
+        "clientY": 491,
+        "timeStamp": 8620,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 238,
+        "clientY": 492,
+        "timeStamp": 8628.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 225,
+        "clientY": 491,
+        "timeStamp": 8636.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 213,
+        "clientY": 485,
+        "timeStamp": 8644.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 203,
+        "clientY": 475,
+        "timeStamp": 8652,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 191,
+        "clientY": 460,
+        "timeStamp": 8660.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 182,
+        "clientY": 437,
+        "timeStamp": 8668.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 175,
+        "clientY": 405,
+        "timeStamp": 8675.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 172,
+        "clientY": 366,
+        "timeStamp": 8685.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 172,
+        "clientY": 328,
+        "timeStamp": 8692.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 176,
+        "clientY": 283,
+        "timeStamp": 8699.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 187,
+        "clientY": 240,
+        "timeStamp": 8708.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 202,
+        "clientY": 204,
+        "timeStamp": 8716,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 220,
+        "clientY": 172,
+        "timeStamp": 8723.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 239,
+        "clientY": 152,
+        "timeStamp": 8731.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 257,
+        "clientY": 142,
+        "timeStamp": 8740.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 273,
+        "clientY": 137,
+        "timeStamp": 8750.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 285,
+        "clientY": 136,
+        "timeStamp": 8755.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 301,
+        "clientY": 138,
+        "timeStamp": 8765,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 320,
+        "clientY": 150,
+        "timeStamp": 8772.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 340,
+        "clientY": 169,
+        "timeStamp": 8783.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 361,
+        "clientY": 196,
+        "timeStamp": 8787.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 377,
+        "clientY": 233,
+        "timeStamp": 8797,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 390,
+        "clientY": 274,
+        "timeStamp": 8804,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 396,
+        "clientY": 313,
+        "timeStamp": 8812.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 396,
+        "clientY": 348,
+        "timeStamp": 8820.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 390,
+        "clientY": 386,
+        "timeStamp": 8828.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 378,
+        "clientY": 416,
+        "timeStamp": 8836.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 361,
+        "clientY": 443,
+        "timeStamp": 8844,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 340,
+        "clientY": 464,
+        "timeStamp": 8851.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 313,
+        "clientY": 479,
+        "timeStamp": 8860,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 286,
+        "clientY": 489,
+        "timeStamp": 8868.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 259,
+        "clientY": 493,
+        "timeStamp": 8875.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 240,
+        "clientY": 495,
+        "timeStamp": 8884.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 226,
+        "clientY": 493,
+        "timeStamp": 8893.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 215,
+        "clientY": 488,
+        "timeStamp": 8899.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 205,
+        "clientY": 478,
+        "timeStamp": 8909.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 196,
+        "clientY": 459,
+        "timeStamp": 8915.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 186,
+        "clientY": 432,
+        "timeStamp": 8924.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 181,
+        "clientY": 392,
+        "timeStamp": 8932.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 177,
+        "clientY": 353,
+        "timeStamp": 8940,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 181,
+        "clientY": 311,
+        "timeStamp": 8948.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 189,
+        "clientY": 266,
+        "timeStamp": 8955.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 204,
+        "clientY": 223,
+        "timeStamp": 8963.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 223,
+        "clientY": 186,
+        "timeStamp": 8972.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 245,
+        "clientY": 160,
+        "timeStamp": 8979.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 264,
+        "clientY": 145,
+        "timeStamp": 8988.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 279,
+        "clientY": 139,
+        "timeStamp": 8995.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 290,
+        "clientY": 139,
+        "timeStamp": 9004,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 306,
+        "clientY": 143,
+        "timeStamp": 9012.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 323,
+        "clientY": 155,
+        "timeStamp": 9020.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 345,
+        "clientY": 183,
+        "timeStamp": 9027.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 368,
+        "clientY": 221,
+        "timeStamp": 9037.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 383,
+        "clientY": 270,
+        "timeStamp": 9044.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 391,
+        "clientY": 328,
+        "timeStamp": 9051.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 390,
+        "clientY": 385,
+        "timeStamp": 9061.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 381,
+        "clientY": 438,
+        "timeStamp": 9067.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 361,
+        "clientY": 485,
+        "timeStamp": 9075.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 336,
+        "clientY": 526,
+        "timeStamp": 9083.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 557,
+        "timeStamp": 9093.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 276,
+        "clientY": 582,
+        "timeStamp": 9100.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 244,
+        "clientY": 600,
+        "timeStamp": 9110.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 216,
+        "clientY": 612,
+        "timeStamp": 9115.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 197,
+        "clientY": 616,
+        "timeStamp": 9124.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 188,
+        "clientY": 616,
+        "timeStamp": 9132,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 177,
+        "clientY": 613,
+        "timeStamp": 9140.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 168,
+        "clientY": 605,
+        "timeStamp": 9148.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 159,
+        "clientY": 588,
+        "timeStamp": 9156,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 149,
+        "clientY": 555,
+        "timeStamp": 9163.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 139,
+        "clientY": 515,
+        "timeStamp": 9172,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 136,
+        "clientY": 463,
+        "timeStamp": 9179.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 140,
+        "clientY": 408,
+        "timeStamp": 9189.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 150,
+        "clientY": 357,
+        "timeStamp": 9196.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 308,
+        "timeStamp": 9204.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 185,
+        "clientY": 269,
+        "timeStamp": 9212,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 206,
+        "clientY": 236,
+        "timeStamp": 9219.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 227,
+        "clientY": 217,
+        "timeStamp": 9227.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 240,
+        "clientY": 209,
+        "timeStamp": 9236.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 250,
+        "clientY": 206,
+        "timeStamp": 9244.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 258,
+        "clientY": 207,
+        "timeStamp": 9252.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 267,
+        "clientY": 213,
+        "timeStamp": 9260.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 276,
+        "clientY": 226,
+        "timeStamp": 9268.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 288,
+        "clientY": 252,
+        "timeStamp": 9276.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 300,
+        "clientY": 288,
+        "timeStamp": 9283.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 312,
+        "clientY": 333,
+        "timeStamp": 9291.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 317,
+        "clientY": 383,
+        "timeStamp": 9299.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 321,
+        "clientY": 438,
+        "timeStamp": 9308.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 323,
+        "clientY": 490,
+        "timeStamp": 9315.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 322,
+        "clientY": 534,
+        "timeStamp": 9324,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 315,
+        "clientY": 579,
+        "timeStamp": 9331.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 305,
+        "clientY": 624,
+        "timeStamp": 9339.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 290,
+        "clientY": 668,
+        "timeStamp": 9348.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 276,
+        "clientY": 704,
+        "timeStamp": 9356.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 260,
+        "clientY": 738,
+        "timeStamp": 9364.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 248,
+        "clientY": 759,
+        "timeStamp": 9372.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 239,
+        "clientY": 773,
+        "timeStamp": 9380.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 232,
+        "clientY": 782,
+        "timeStamp": 9389,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 229,
+        "clientY": 785,
+        "timeStamp": 9396,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 227,
+        "clientY": 786,
+        "timeStamp": 9405.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 225,
+        "clientY": 783,
+        "timeStamp": 9420,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 222,
+        "clientY": 771,
+        "timeStamp": 9428.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 217,
+        "clientY": 748,
+        "timeStamp": 9439.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 209,
+        "clientY": 703,
+        "timeStamp": 9443.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 203,
+        "clientY": 648,
+        "timeStamp": 9453.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 201,
+        "clientY": 591,
+        "timeStamp": 9459.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 531,
+        "timeStamp": 9468.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 471,
+        "timeStamp": 9476.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 412,
+        "timeStamp": 9485,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 355,
+        "timeStamp": 9491.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 303,
+        "timeStamp": 9501.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 199,
+        "clientY": 260,
+        "timeStamp": 9507.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 202,
+        "clientY": 226,
+        "timeStamp": 9517.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 204,
+        "clientY": 206,
+        "timeStamp": 9523.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 207,
+        "clientY": 195,
+        "timeStamp": 9532.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 207,
+        "clientY": 191,
+        "timeStamp": 9541.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 208,
+        "clientY": 189,
+        "timeStamp": 9549.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 209,
+        "clientY": 189,
+        "timeStamp": 9555.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 211,
+        "clientY": 193,
+        "timeStamp": 9564.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 215,
+        "clientY": 205,
+        "timeStamp": 9572.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 225,
+        "clientY": 231,
+        "timeStamp": 9580.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 241,
+        "clientY": 280,
+        "timeStamp": 9588.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 255,
+        "clientY": 337,
+        "timeStamp": 9596.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 272,
+        "clientY": 398,
+        "timeStamp": 9604.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 286,
+        "clientY": 465,
+        "timeStamp": 9612.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 299,
+        "clientY": 529,
+        "timeStamp": 9620.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 305,
+        "clientY": 595,
+        "timeStamp": 9628.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 658,
+        "timeStamp": 9635.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 707,
+        "timeStamp": 9644.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 304,
+        "clientY": 757,
+        "timeStamp": 9651.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 297,
+        "clientY": 796,
+        "timeStamp": 9659.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 289,
+        "clientY": 829,
+        "timeStamp": 9667.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 278,
+        "clientY": 852,
+        "timeStamp": 9676.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 271,
+        "clientY": 863,
+        "timeStamp": 9684.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 265,
+        "clientY": 869,
+        "timeStamp": 9691.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 260,
+        "clientY": 870,
+        "timeStamp": 9700.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 255,
+        "clientY": 869,
+        "timeStamp": 9708,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 247,
+        "clientY": 861,
+        "timeStamp": 9716.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 235,
+        "clientY": 843,
+        "timeStamp": 9723.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 215,
+        "clientY": 811,
+        "timeStamp": 9733.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 195,
+        "clientY": 772,
+        "timeStamp": 9740.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 171,
+        "clientY": 721,
+        "timeStamp": 9748.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 148,
+        "clientY": 664,
+        "timeStamp": 9757.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 129,
+        "clientY": 596,
+        "timeStamp": 9764.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 112,
+        "clientY": 532,
+        "timeStamp": 9772,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 96,
+        "clientY": 467,
+        "timeStamp": 9779.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 79,
+        "clientY": 403,
+        "timeStamp": 9788.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 71,
+        "clientY": 339,
+        "timeStamp": 9796.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 69,
+        "clientY": 287,
+        "timeStamp": 9804.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 70,
+        "clientY": 244,
+        "timeStamp": 9813.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 76,
+        "clientY": 212,
+        "timeStamp": 9819.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 87,
+        "clientY": 188,
+        "timeStamp": 9828.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 97,
+        "clientY": 177,
+        "timeStamp": 9835.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 107,
+        "clientY": 171,
+        "timeStamp": 9845.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 119,
+        "clientY": 169,
+        "timeStamp": 9852.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 131,
+        "clientY": 169,
+        "timeStamp": 9860,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 146,
+        "clientY": 174,
+        "timeStamp": 9867.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 174,
+        "clientY": 193,
+        "timeStamp": 9877.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 200,
+        "clientY": 219,
+        "timeStamp": 9884,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 226,
+        "clientY": 255,
+        "timeStamp": 9892.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 252,
+        "clientY": 302,
+        "timeStamp": 9899.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 275,
+        "clientY": 357,
+        "timeStamp": 9907.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 291,
+        "clientY": 417,
+        "timeStamp": 9916.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 303,
+        "clientY": 478,
+        "timeStamp": 9925.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 536,
+        "timeStamp": 9932.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 311,
+        "clientY": 588,
+        "timeStamp": 9940,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 311,
+        "clientY": 631,
+        "timeStamp": 9947.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 307,
+        "clientY": 676,
+        "timeStamp": 9956.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 296,
+        "clientY": 714,
+        "timeStamp": 9963.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 284,
+        "clientY": 744,
+        "timeStamp": 9972.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 267,
+        "clientY": 769,
+        "timeStamp": 9980.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 251,
+        "clientY": 787,
+        "timeStamp": 9987.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 232,
+        "clientY": 800,
+        "timeStamp": 9996,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 212,
+        "clientY": 807,
+        "timeStamp": 10004.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 197,
+        "clientY": 809,
+        "timeStamp": 10012.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 185,
+        "clientY": 809,
+        "timeStamp": 10019.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 174,
+        "clientY": 804,
+        "timeStamp": 10027.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 162,
+        "clientY": 794,
+        "timeStamp": 10035.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 148,
+        "clientY": 777,
+        "timeStamp": 10043.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 130,
+        "clientY": 745,
+        "timeStamp": 10051.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 115,
+        "clientY": 707,
+        "timeStamp": 10059.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 102,
+        "clientY": 661,
+        "timeStamp": 10067.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 92,
+        "clientY": 613,
+        "timeStamp": 10076.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 88,
+        "clientY": 563,
+        "timeStamp": 10084,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 91,
+        "clientY": 511,
+        "timeStamp": 10092,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 99,
+        "clientY": 458,
+        "timeStamp": 10099.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 115,
+        "clientY": 404,
+        "timeStamp": 10108.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 135,
+        "clientY": 352,
+        "timeStamp": 10116.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 161,
+        "clientY": 304,
+        "timeStamp": 10124,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 188,
+        "clientY": 263,
+        "timeStamp": 10131.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 214,
+        "clientY": 233,
+        "timeStamp": 10140,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 234,
+        "clientY": 214,
+        "timeStamp": 10147.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 244,
+        "clientY": 207,
+        "timeStamp": 10156,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 250,
+        "clientY": 205,
+        "timeStamp": 10164.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 253,
+        "clientY": 205,
+        "timeStamp": 10172.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 257,
+        "clientY": 209,
+        "timeStamp": 10180.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 261,
+        "clientY": 221,
+        "timeStamp": 10188.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 263,
+        "clientY": 244,
+        "timeStamp": 10195.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 265,
+        "clientY": 277,
+        "timeStamp": 10203.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 267,
+        "clientY": 315,
+        "timeStamp": 10212.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 264,
+        "clientY": 357,
+        "timeStamp": 10219.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 255,
+        "clientY": 397,
+        "timeStamp": 10228.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 242,
+        "clientY": 438,
+        "timeStamp": 10237.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 228,
+        "clientY": 469,
+        "timeStamp": 10243.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 215,
+        "clientY": 492,
+        "timeStamp": 10251.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 204,
+        "clientY": 511,
+        "timeStamp": 10259.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 196,
+        "clientY": 523,
+        "timeStamp": 10268.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 191,
+        "clientY": 530,
+        "timeStamp": 10276.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 186,
+        "clientY": 533,
+        "timeStamp": 10285,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 184,
+        "clientY": 533,
+        "timeStamp": 10292,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 181,
+        "clientY": 528,
+        "timeStamp": 10302.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 178,
+        "clientY": 514,
+        "timeStamp": 10307.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 177,
+        "clientY": 499,
+        "timeStamp": 10318.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 176,
+        "clientY": 483,
+        "timeStamp": 10323.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 176,
+        "clientY": 471,
+        "timeStamp": 10331.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 176,
+        "clientY": 459,
+        "timeStamp": 10339.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 174,
+        "clientY": 446,
+        "timeStamp": 10348.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 173,
+        "clientY": 438,
+        "timeStamp": 10355.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 172,
+        "clientY": 432,
+        "timeStamp": 10364,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 171,
+        "clientY": 426,
+        "timeStamp": 10372.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 168,
+        "clientY": 420,
+        "timeStamp": 10379.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 419,
+        "timeStamp": 10396.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 164,
+        "clientY": 418,
+        "timeStamp": 10403.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 163,
+        "clientY": 418,
+        "timeStamp": 10412,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 161,
+        "clientY": 418,
+        "timeStamp": 10419.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 159,
+        "clientY": 418,
+        "timeStamp": 10427.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 161,
+        "clientY": 418,
+        "timeStamp": 10452.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 164,
+        "clientY": 419,
+        "timeStamp": 10460.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 419,
+        "timeStamp": 10467.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 420,
+        "timeStamp": 10476.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 421,
+        "timeStamp": 10572.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 422,
+        "timeStamp": 10836.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 423,
+        "timeStamp": 11084.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 424,
+        "timeStamp": 11100.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 426,
+        "timeStamp": 11116.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 427,
+        "timeStamp": 11132.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 428,
+        "timeStamp": 11148.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 429,
+        "timeStamp": 11156.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 167,
+        "clientY": 430,
+        "timeStamp": 11172.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 168,
+        "clientY": 430,
+        "timeStamp": 11179.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 168,
+        "clientY": 431,
+        "timeStamp": 11195.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 169,
+        "clientY": 433,
+        "timeStamp": 11204.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 170,
+        "clientY": 435,
+        "timeStamp": 11222.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 171,
+        "clientY": 436,
+        "timeStamp": 11236.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 172,
+        "clientY": 437,
+        "timeStamp": 11243.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 172,
+        "clientY": 438,
+        "timeStamp": 11268,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 173,
+        "clientY": 438,
+        "timeStamp": 11276.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 173,
+        "clientY": 439,
+        "timeStamp": 11291.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 174,
+        "clientY": 441,
+        "timeStamp": 11300.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 175,
+        "clientY": 442,
+        "timeStamp": 11308.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 178,
+        "clientY": 444,
+        "timeStamp": 11317.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 184,
+        "clientY": 447,
+        "timeStamp": 11324.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 190,
+        "clientY": 451,
+        "timeStamp": 11332,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 198,
+        "clientY": 457,
+        "timeStamp": 11340.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 208,
+        "clientY": 462,
+        "timeStamp": 11348.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 221,
+        "clientY": 471,
+        "timeStamp": 11355.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 240,
+        "clientY": 482,
+        "timeStamp": 11364.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 262,
+        "clientY": 496,
+        "timeStamp": 11373.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 291,
+        "clientY": 511,
+        "timeStamp": 11380.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 321,
+        "clientY": 533,
+        "timeStamp": 11388.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 349,
+        "clientY": 555,
+        "timeStamp": 11396,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 372,
+        "clientY": 579,
+        "timeStamp": 11404.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 388,
+        "clientY": 601,
+        "timeStamp": 11411.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 397,
+        "clientY": 617,
+        "timeStamp": 11420.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 400,
+        "clientY": 628,
+        "timeStamp": 11428.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 400,
+        "clientY": 636,
+        "timeStamp": 11436.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 395,
+        "clientY": 643,
+        "timeStamp": 11443.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 387,
+        "clientY": 649,
+        "timeStamp": 11452.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 373,
+        "clientY": 653,
+        "timeStamp": 11460.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 357,
+        "clientY": 656,
+        "timeStamp": 11468.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 341,
+        "clientY": 656,
+        "timeStamp": 11475.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 318,
+        "clientY": 654,
+        "timeStamp": 11484.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 297,
+        "clientY": 651,
+        "timeStamp": 11492.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 281,
+        "clientY": 647,
+        "timeStamp": 11500.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 267,
+        "clientY": 643,
+        "timeStamp": 11507.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 255,
+        "clientY": 638,
+        "timeStamp": 11515.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 244,
+        "clientY": 633,
+        "timeStamp": 11523.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 235,
+        "clientY": 625,
+        "timeStamp": 11532.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 226,
+        "clientY": 613,
+        "timeStamp": 11540,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 216,
+        "clientY": 597,
+        "timeStamp": 11547.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 206,
+        "clientY": 577,
+        "timeStamp": 11555.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 198,
+        "clientY": 552,
+        "timeStamp": 11563.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 192,
+        "clientY": 528,
+        "timeStamp": 11572.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 188,
+        "clientY": 501,
+        "timeStamp": 11580,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 183,
+        "clientY": 478,
+        "timeStamp": 11587.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 181,
+        "clientY": 460,
+        "timeStamp": 11595.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 180,
+        "clientY": 447,
+        "timeStamp": 11603.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 180,
+        "clientY": 436,
+        "timeStamp": 11611.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 181,
+        "clientY": 428,
+        "timeStamp": 11619.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 182,
+        "clientY": 423,
+        "timeStamp": 11627.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 185,
+        "clientY": 420,
+        "timeStamp": 11636,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 187,
+        "clientY": 418,
+        "timeStamp": 11644.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 189,
+        "clientY": 417,
+        "timeStamp": 11652.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 191,
+        "clientY": 417,
+        "timeStamp": 11659.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 193,
+        "clientY": 420,
+        "timeStamp": 11667.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 197,
+        "clientY": 428,
+        "timeStamp": 11676.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 204,
+        "clientY": 444,
+        "timeStamp": 11683.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 213,
+        "clientY": 472,
+        "timeStamp": 11692.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 220,
+        "clientY": 503,
+        "timeStamp": 11700.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 225,
+        "clientY": 538,
+        "timeStamp": 11707.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 227,
+        "clientY": 568,
+        "timeStamp": 11716.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 226,
+        "clientY": 593,
+        "timeStamp": 11723.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 224,
+        "clientY": 616,
+        "timeStamp": 11732.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 220,
+        "clientY": 635,
+        "timeStamp": 11739.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 212,
+        "clientY": 650,
+        "timeStamp": 11747.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 205,
+        "clientY": 661,
+        "timeStamp": 11755.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 196,
+        "clientY": 670,
+        "timeStamp": 11764.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 187,
+        "clientY": 676,
+        "timeStamp": 11771.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 177,
+        "clientY": 679,
+        "timeStamp": 11779.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 680,
+        "timeStamp": 11787.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 157,
+        "clientY": 679,
+        "timeStamp": 11796,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 148,
+        "clientY": 676,
+        "timeStamp": 11804.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 141,
+        "clientY": 669,
+        "timeStamp": 11811.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 134,
+        "clientY": 661,
+        "timeStamp": 11820.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 130,
+        "clientY": 650,
+        "timeStamp": 11828.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 125,
+        "clientY": 636,
+        "timeStamp": 11836.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 122,
+        "clientY": 615,
+        "timeStamp": 11845.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 121,
+        "clientY": 595,
+        "timeStamp": 11852,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 122,
+        "clientY": 573,
+        "timeStamp": 11862.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 129,
+        "clientY": 548,
+        "timeStamp": 11867.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 142,
+        "clientY": 522,
+        "timeStamp": 11876.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 160,
+        "clientY": 500,
+        "timeStamp": 11884.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 187,
+        "clientY": 481,
+        "timeStamp": 11892.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 216,
+        "clientY": 467,
+        "timeStamp": 11900.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 245,
+        "clientY": 461,
+        "timeStamp": 11908.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 267,
+        "clientY": 461,
+        "timeStamp": 11916.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 294,
+        "clientY": 466,
+        "timeStamp": 11923.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 317,
+        "clientY": 479,
+        "timeStamp": 11932.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 338,
+        "clientY": 498,
+        "timeStamp": 11940.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 355,
+        "clientY": 525,
+        "timeStamp": 11948,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 365,
+        "clientY": 557,
+        "timeStamp": 11959.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 367,
+        "clientY": 588,
+        "timeStamp": 11963.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 363,
+        "clientY": 619,
+        "timeStamp": 11972.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 353,
+        "clientY": 645,
+        "timeStamp": 11979.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 342,
+        "clientY": 661,
+        "timeStamp": 11989.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 332,
+        "clientY": 671,
+        "timeStamp": 11995.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 321,
+        "clientY": 677,
+        "timeStamp": 12003.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 309,
+        "clientY": 679,
+        "timeStamp": 12012.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 297,
+        "clientY": 679,
+        "timeStamp": 12020.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 278,
+        "clientY": 676,
+        "timeStamp": 12028.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 253,
+        "clientY": 668,
+        "timeStamp": 12036.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 225,
+        "clientY": 655,
+        "timeStamp": 12044,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 196,
+        "clientY": 639,
+        "timeStamp": 12052.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 169,
+        "clientY": 623,
+        "timeStamp": 12060,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 146,
+        "clientY": 603,
+        "timeStamp": 12067.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 130,
+        "clientY": 585,
+        "timeStamp": 12075.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 122,
+        "clientY": 570,
+        "timeStamp": 12083.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 121,
+        "clientY": 558,
+        "timeStamp": 12091.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 124,
+        "clientY": 547,
+        "timeStamp": 12099.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 132,
+        "clientY": 537,
+        "timeStamp": 12108.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 142,
+        "clientY": 527,
+        "timeStamp": 12115.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 152,
+        "clientY": 520,
+        "timeStamp": 12125.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 517,
+        "timeStamp": 12131.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 171,
+        "clientY": 515,
+        "timeStamp": 12139.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 173,
+        "clientY": 514,
+        "timeStamp": 12148.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 175,
+        "clientY": 514,
+        "timeStamp": 12156.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 176,
+        "clientY": 514,
+        "timeStamp": 12171.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 178,
+        "clientY": 513,
+        "timeStamp": 12340.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 183,
+        "clientY": 512,
+        "timeStamp": 12349,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 194,
+        "clientY": 509,
+        "timeStamp": 12356.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 214,
+        "clientY": 501,
+        "timeStamp": 12363.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 248,
+        "clientY": 494,
+        "timeStamp": 12371.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 283,
+        "clientY": 489,
+        "timeStamp": 12379.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 313,
+        "clientY": 487,
+        "timeStamp": 12388.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 351,
+        "clientY": 487,
+        "timeStamp": 12396.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 402,
+        "clientY": 487,
+        "timeStamp": 12404.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 459,
+        "clientY": 487,
+        "timeStamp": 12411.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 487,
+        "clientY": 822,
+        "timeStamp": 14060,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 448,
+        "clientY": 793,
+        "timeStamp": 14067.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 407,
+        "clientY": 760,
+        "timeStamp": 14075.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 363,
+        "clientY": 726,
+        "timeStamp": 14083.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 324,
+        "clientY": 695,
+        "timeStamp": 14092.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 289,
+        "clientY": 669,
+        "timeStamp": 14100,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 258,
+        "clientY": 643,
+        "timeStamp": 14108.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 230,
+        "clientY": 619,
+        "timeStamp": 14117.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 208,
+        "clientY": 596,
+        "timeStamp": 14124.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 193,
+        "clientY": 576,
+        "timeStamp": 14133.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 183,
+        "clientY": 562,
+        "timeStamp": 14140.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 174,
+        "clientY": 548,
+        "timeStamp": 14148.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 168,
+        "clientY": 538,
+        "timeStamp": 14157.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 162,
+        "clientY": 530,
+        "timeStamp": 14166.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 158,
+        "clientY": 524,
+        "timeStamp": 14171.400000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 155,
+        "clientY": 519,
+        "timeStamp": 14185.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 155,
+        "clientY": 516,
+        "timeStamp": 14188.200000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 154,
+        "clientY": 514,
+        "timeStamp": 14198.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 154,
+        "clientY": 513,
+        "timeStamp": 14203.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 154,
+        "clientY": 511,
+        "timeStamp": 14211.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 154,
+        "clientY": 508,
+        "timeStamp": 14219.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 155,
+        "clientY": 506,
+        "timeStamp": 14227.5,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 157,
+        "clientY": 503,
+        "timeStamp": 14236,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 158,
+        "clientY": 498,
+        "timeStamp": 14243.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 160,
+        "clientY": 495,
+        "timeStamp": 14251.900000000373,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 162,
+        "clientY": 492,
+        "timeStamp": 14260.300000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 162,
+        "clientY": 490,
+        "timeStamp": 14268.700000001118,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 164,
+        "clientY": 487,
+        "timeStamp": 14276,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 486,
+        "timeStamp": 14283.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 165,
+        "clientY": 485,
+        "timeStamp": 14292.099999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 485,
+        "timeStamp": 14299.599999999627,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 484,
+        "timeStamp": 14308,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 484,
+        "timeStamp": 14497.900000000373,
+        "type": "mousedown"
+    },
+    {
+        "clientX": 166,
+        "clientY": 484,
+        "timeStamp": 14506.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 484,
+        "timeStamp": 14515.800000000745,
+        "type": "mousemove"
+    },
+    {
+        "clientX": 166,
+        "clientY": 484,
+        "timeStamp": 14555.800000000745,
+        "type": "mouseup"
+    }
+];
+
+for(let i=0;i<mouseEvent.length;i++){
+    let event = mouseEvent[i];
+    let type = event.type;
+    let mouseEventObj = {
+        "isTrusted": true
+    };
+    mouseEventObj = eggvm.toolsFunc.createProxyObj(mouseEventObj, MouseEvent, "mouseEvent");
+    eggvm.toolsFunc.setProtoArr.call(mouseEventObj, "clientX", event.clientX);
+    eggvm.toolsFunc.setProtoArr.call(mouseEventObj, "clientY", event.clientY);
+    eggvm.toolsFunc.setProtoArr.call(mouseEventObj, "timeStamp", event.timeStamp);
+    eggvm.toolsFunc.setProtoArr.call(mouseEventObj, "type", event.type);
+    let listenerList = eggvm.memory.asyncEvent.listener[type];
+    for(let j=0;j<listenerList.length;j++){
+        let callBack = listenerList[j].listener;
+        let self = listenerList[j].self;
+        callBack.call(self, mouseEventObj);
+    }
+}

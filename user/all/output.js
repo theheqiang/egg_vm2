@@ -1744,16 +1744,6 @@ HTMLSpanElement = function HTMLSpanElement(){return eggvm.toolsFunc.throwError("
 eggvm.toolsFunc.safeProto(HTMLSpanElement, "HTMLSpanElement");
 Object.setPrototypeOf(HTMLSpanElement.prototype, HTMLElement.prototype);
 
-// HTMLStyleElement对象
-HTMLStyleElement = function HTMLStyleElement(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
-eggvm.toolsFunc.safeProto(HTMLStyleElement, "HTMLStyleElement");
-Object.setPrototypeOf(HTMLStyleElement.prototype, HTMLElement.prototype);
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "disabled", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "media", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "type", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "sheet", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "sheet_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "blocking", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_set", arguments)}});
-
 // Document对象
 Document = function Document(){}
 eggvm.toolsFunc.safeProto(Document, "Document");
@@ -3246,20 +3236,6 @@ eval = eggvm.toolsFunc.hook(eval, undefined, false, function (){},function (){})
         });
 
 }();
-// 网页变量初始化
-
-!function (){
-    // console.log(Date.now());// 1666689952666
-    // console.log(new Date().getTime());// 1666689952666
-    // console.log(Math.random());// 0.5
-
-    // let meta1 = document.createElement("meta");
-    // let meta2 = document.createElement("meta");
-    // let head = document.createElement("head");
-    // meta2.content = "YVc1cGRDQjBZV2";
-    // eggvm.toolsFunc.setProtoArr.call(meta2, "parentNode", head);
-    let body = document.createElement("body");
-}();
 // 需要代理的对象
 // window = new Proxy(window, {});
 localStorage = eggvm.toolsFunc.proxy(localStorage, "localStorage");
@@ -3267,53 +3243,22 @@ sessionStorage = eggvm.toolsFunc.proxy(sessionStorage, "sessionStorage");
 location = eggvm.toolsFunc.proxy(location, "location");
 document = eggvm.toolsFunc.proxy(document, "document");
 window = eggvm.toolsFunc.proxy(window, "window");
-// 需要调试的代码
-
-debugger;
-// 函数的入参
-// 函数的返回值
-// 执行这个函数对全局产生的影响
-// document.cookie = "aaaa";
-// console.log(document.cookie);
-// document.cookie = "a=1";
-// console.log(document.cookie);
-// document.cookie = "a=10";
-// console.log(document.cookie);
-// document.cookie = "b=20";
-// console.log(document.cookie);
-// debugger;
-// debugger;
-// navigator.plugins.item(0);
-// navigator.plugins.namedItem("Chrome PDF Viewer");
-// navigator.plugins[0].item(0);
-// navigator.plugins[0].namedItem("application/pdf");
-// navigator.mimeTypes.item(0);
-// navigator.mimeTypes.namedItem("application/pdf");
-
-// console.log("开始执行同步代码");// 1
-// function loadFunc(){
-//     console.log("正在执行load事件");//3
-// }
-// window.addEventListener("load", loadFunc);
-// console.log("结束执行同步代码");//2
-
-// 实现环境功能
-// mdn 查询函数的用法
-//
-
-// 入参
-// 返回值
-// this对象
-// 对全局对象产生影响
-
-
-debugger;
-// 异步执行的代码
-
-// let loadEventList = eggvm.memory.asyncEvent.listener["load"];
-// for(let i=0;i<loadEventList.length;i++){
-//     let loadEvent = loadEventList[i];
-//     let self = loadEvent.self;
-//     let listener = loadEvent.listener;
-//     listener.call(self);
-// }
+!function(){
+    try{
+        if(document.all.__proto__ === HTMLAllCollection.prototype){
+            if(document.all !== undefined){
+                if(document.all == undefined){
+                    console.log("环境正常");
+                }else{
+                    console.log("环境异常3");
+                }
+            }else{
+                console.log("环境异常2");
+            }
+        }else{
+            console.log("环境异常1");
+        }
+    }catch(e){
+        console.log("环境异常0");
+    }
+}();

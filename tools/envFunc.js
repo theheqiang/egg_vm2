@@ -1,5 +1,222 @@
 // 浏览器接口具体的实现
 !function (){
+    eggvm.envFunc.Document_all_get = function Document_all_get(){
+        let all = eggvm.memory.globalVar.all;
+        Object.setPrototypeOf(all, HTMLAllCollection.prototype);
+        return all;
+    }
+    eggvm.envFunc.Document_characterSet_get = function Document_characterSet_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "characterSet");
+    }
+    eggvm.envFunc.Document_charset_get = function Document_characterSet_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "charset");
+    }
+    eggvm.envFunc.Event_timeStamp_get = function Event_timeStamp_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "timeStamp");
+    }
+    eggvm.envFunc.MouseEvent_clientY_get = function MouseEvent_clientY_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "clientY");
+    }
+    eggvm.envFunc.MouseEvent_clientX_get = function MouseEvent_clientX_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "clientX");
+    }
+    eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListener(){
+        let type = arguments[0];
+        let listener = arguments[1];
+        let options = arguments[2];
+        let event = {
+            "self": this,
+            "type": type,
+            "listener":listener,
+            "options":options
+        }
+        if(eggvm.memory.asyncEvent.listener === undefined){
+            eggvm.memory.asyncEvent.listener = {};
+        }
+        if(eggvm.memory.asyncEvent.listener[type] === undefined){
+           eggvm.memory.asyncEvent.listener[type] = [];
+        }
+        eggvm.memory.asyncEvent.listener[type].push(event);
+    }
+    eggvm.envFunc.BatteryManager_level_get = function BatteryManager_level_get(){
+        return 1;
+    }
+    eggvm.envFunc.BatteryManager_chargingTime_get = function BatteryManager_chargingTime_get(){
+        return 0;
+    }
+    eggvm.envFunc.BatteryManager_charging_get = function BatteryManager_charging_get(){
+        return true;
+    }
+    eggvm.envFunc.Navigator_getBattery = function Navigator_getBattery(){
+        let batteryManager = {};
+        batteryManager = eggvm.toolsFunc.createProxyObj(batteryManager, BatteryManager, "batteryManager");
+        let obj = {
+            "then":function (callBack){
+                let _callBack = callBack;
+                callBack = function (){
+                    return _callBack(batteryManager);
+                }
+                if(eggvm.memory.asyncEvent.promise === undefined){
+                    eggvm.memory.asyncEvent.promise = [];
+                }
+                eggvm.memory.asyncEvent.promise.push(callBack);
+            }
+        }
+        return obj;
+    }
+    eggvm.envFunc.window_clearTimeout = function window_clearTimeout(){
+        let timeoutID = arguments[0];
+        for(let i = 0; i< eggvm.memory.asyncEvent.setTimeout.length;i++){
+            let event = eggvm.memory.asyncEvent.setTimeout[i];
+            if(event.timeoutID === timeoutID){
+                delete eggvm.memory.asyncEvent.setTimeout[i];
+            }
+        }
+    }
+    eggvm.envFunc.window_setTimeout = function window_setTimeout(){
+        let func = arguments[0];
+        let delay = arguments[1] || 0;
+        let length = arguments.length;
+        let args = [];
+        for(let i=2;i<length;i++){
+            args.push(arguments[i]);
+        }
+        let type = 1;
+        if(typeof func !== "function"){
+            type = 0;
+        }
+        eggvm.memory.globalVar.timeoutID += 1;
+        let event = {
+            "callback":func,
+            "delay":delay,
+            "args":args,
+            "type":type, // 1代表函数，0代表是字符串代码,eval(code);
+            "timeoutID": eggvm.memory.globalVar.timeoutID
+        }
+        if(eggvm.memory.asyncEvent.setTimeout === undefined){
+            eggvm.memory.asyncEvent.setTimeout = [];
+        }
+        eggvm.memory.asyncEvent.setTimeout.push(event);
+        return eggvm.memory.globalVar.timeoutID;
+    }
+    eggvm.envFunc.XMLHttpRequest_open = function XMLHttpRequest_open(){
+        // 浏览器接口
+        let method = arguments[0];
+        let url = arguments[1];
+        return url;
+    }
+    eggvm.envFunc.HTMLElement_offsetHeight_get = function HTMLElement_offsetHeight_get(){
+        debugger;
+        let fontFamily = this.style.fontFamily;
+        if(eggvm.memory.globalVar.fontList.indexOf(fontFamily) !== -1){// 能够识别的字体
+            return 666;
+        }else{ // 无法识别的字体
+            return 999;
+        }
+    }
+    eggvm.envFunc.HTMLElement_offsetWidth_get = function HTMLElement_offsetWidth_get(){
+        let fontFamily = this.style.fontFamily;
+        if(eggvm.memory.globalVar.fontList.indexOf(fontFamily) !== -1){// 能够识别的字体
+            return 1666;
+        }else{ // 无法识别的字体
+            return 1999;
+        }
+    }
+    eggvm.envFunc.Element_children_get = function Element_children_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "children");
+    }
+    eggvm.envFunc.Node_appendChild = function Node_appendChild(){
+        let tag = arguments[0];
+        let collection = [];
+        collection.push(tag);
+        collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, "collection");
+        eggvm.toolsFunc.setProtoArr.call(this, "children", collection);
+        return tag;
+    }
+    eggvm.envFunc.Document_body_get = function Document_body_get(){
+        let collection = eggvm.toolsFunc.getCollection('[object HTMLBodyElement]');
+        return collection[0];
+    }
+    eggvm.envFunc.Element_innerHTML_set = function Element_innerHTML_set(){
+        let htmlStr = arguments[0];
+        // <span lang="zh" style="font-family:mmll;font-size:160px">fontTest</span>
+        let style = {
+            "font-size":"160px",
+            "font-family":"mmll",
+            "fontFamily":"mmll"
+        };
+        style = eggvm.toolsFunc.createProxyObj(style,CSSStyleDeclaration, "style");
+        let tagJson = {
+            "type": "span",
+            "prop":{
+                "lang":"zh",
+                "style":style,
+                "textContent":"fontTest"
+            }
+        }
+        let span = document.createElement(tagJson["type"]);
+        for (const key in tagJson["prop"]) {
+            eggvm.toolsFunc.setProtoArr.call(span, key, tagJson["prop"][key]);
+        }
+        let collection = [];
+        collection.push(span);
+        collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, "collection");
+        eggvm.toolsFunc.setProtoArr.call(this, "children", collection);
+    }
+    eggvm.envFunc.WebGLRenderingContext_canvas_get = function WebGLRenderingContext_canvas_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "canvas");
+    }
+    eggvm.envFunc.WebGLRenderingContext_createProgram = function WebGLRenderingContext_createProgram(){
+        let program = {};
+        program = eggvm.toolsFunc.createProxyObj(program, WebGLProgram, "program");
+        return program;
+    }
+    eggvm.envFunc.WebGLRenderingContext_createBuffer = function WebGLRenderingContext_createBuffer(){
+        let buffer = {};
+        buffer = eggvm.toolsFunc.createProxyObj(buffer, WebGLBuffer, "buffer");
+        return buffer;
+    }
+    eggvm.envFunc.HTMLCanvasElement_toDataURL = function HTMLCanvasElement_toDataURL(){
+        let type = eggvm.toolsFunc.getProtoArr.call(this, "type");
+        if(type === "2d"){
+            return eggvm.memory.globalVar.canvas_2d;
+        }else if(type === "webgl"){
+            return eggvm.memory.globalVar.canvas_webgl;
+        }
+    }
+    eggvm.envFunc.HTMLCanvasElement_getContext = function HTMLCanvasElement_getContext(){
+        let type = arguments[0];
+        let context = {};
+        switch (type){
+            case "2d":
+                context = eggvm.toolsFunc.createProxyObj(context, CanvasRenderingContext2D, "context_2d");
+                eggvm.toolsFunc.setProtoArr.call(context, "canvas", this);
+                eggvm.toolsFunc.setProtoArr.call(this, "type", type);
+                break;
+            case "webgl":
+                context = eggvm.toolsFunc.createProxyObj(context, WebGLRenderingContext, "context_webgl");
+                eggvm.toolsFunc.setProtoArr.call(context, "canvas", this);
+                eggvm.toolsFunc.setProtoArr.call(this, "type", type);
+                break;
+            default:
+                console.log(`HTMLCanvasElement_getContext_${type}未实现`);
+                break;
+        }
+        return context;
+    }
+    eggvm.envFunc.HTMLElement_style_get = function HTMLElement_style_get(){
+        let style = eggvm.toolsFunc.getProtoArr.call(this, "style");
+        if(style === undefined){
+            style = eggvm.toolsFunc.createProxyObj({}, CSSStyleDeclaration, "style");
+        }
+        return style;
+    }
+    eggvm.envFunc.HTMLCanvasElement_width_set = function HTMLCanvasElement_width_set(){
+
+    }
+    eggvm.envFunc.HTMLCanvasElement_height_set = function HTMLCanvasElement_height_set(){
+
+    }
     eggvm.envFunc.MimeTypeArray_namedItem = function MimeTypeArray_namedItem(){
         let name = arguments[0];
         return this[name];
@@ -216,8 +433,20 @@
                 tag = eggvm.toolsFunc.createProxyObj(tag,HTMLInputElement,`Document_createElement_${tagName}`);
                 eggvm.memory.tag.push(tag);
                 break;
-             case "a":
+            case "a":
                 tag = eggvm.toolsFunc.createProxyObj(tag,HTMLAnchorElement,`Document_createElement_${tagName}`);
+                eggvm.memory.tag.push(tag);
+                break;
+            case "canvas":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLCanvasElement,`Document_createElement_${tagName}`);
+                eggvm.memory.tag.push(tag);
+                break;
+            case "body":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLBodyElement,`Document_createElement_${tagName}`);
+                eggvm.memory.tag.push(tag);
+                break;
+            case "span":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLSpanElement,`Document_createElement_${tagName}`);
                 eggvm.memory.tag.push(tag);
                 break;
             default:
@@ -240,6 +469,20 @@
         }
         return collection;
     }
+    eggvm.envFunc.Element_getElementsByTagName = function Element_getElementsByTagName(){
+        let tagName = arguments[0].toLowerCase();
+        let collection = [];
+        switch (tagName){
+            case "i":
+                collection = eggvm.toolsFunc.getCollection('[object HTMLElement]');
+                collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Element_getElementsByTagName_${tagName}`)
+                break;
+            default:
+                console.log(`Element_getElementsByTagName_${tagName}未实现`);
+                break;
+        }
+        return collection;
+    }
     eggvm.envFunc.Document_write = function Document_write(){
         let tagStr = arguments[0];
         // 解析标签字符串
@@ -247,7 +490,6 @@
         let tagJson = eggvm.toolsFunc.getTagJson(tagStr);
         let tag = document.createElement(tagJson.type);
         for(const key in tagJson.prop){
-            debugger;
             tag[key] = tagJson.prop[key];
             if(tag[key] === undefined){
                 eggvm.toolsFunc.setProtoArr.call(tag, key, tagJson.prop[key]);

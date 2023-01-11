@@ -13,7 +13,7 @@ const name = "test";
 fs.writeFileSync(`./user/${name}/log.txt`, "");
 // 创建虚拟机实例
 const vm = new VM({
-    sandbox:{fs, _name_:name}
+    sandbox:{fs ,ldObj,_name_:name}
 });
 // 配置相关
 const configCode = fs.readFileSync("./config/config.js");

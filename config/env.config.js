@@ -43,6 +43,18 @@ function getCode(){
     code += getFile("PluginArray");
     code += getFile("MimeType");
     code += getFile("MimeTypeArray");
+    code += getFile("CSSStyleDeclaration");
+    code += getFile("CanvasRenderingContext2D");
+    code += getFile("WebGLRenderingContext");
+    code += getFile("WebGLBuffer");
+    code += getFile("WebGLProgram");
+    code += getFile("XMLHttpRequestEventTarget");
+    code += getFile("XMLHttpRequest");
+    code += getFile("BatteryManager");
+    code += getFile("Event");
+    code += getFile("UIEvent");
+    code += getFile("MouseEvent");
+    code += getFile("HTMLAllCollection");
     code += getFile("globalThis");// 全局环境
     return code;
 }

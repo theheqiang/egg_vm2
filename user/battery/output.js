@@ -12,13 +12,11 @@ eggvm.memory.symbolProxy = Symbol("proxy");// 独一无二的属性, 标记是�
 eggvm.memory.symbolData = Symbol("data");// 用来保存当前对象上的原型属性
 eggvm.memory.tag = []; // 内存，存储tag标签
 eggvm.memory.filterProxyProp =[eggvm.memory.symbolProxy,eggvm.memory.symbolData,Symbol.toPrimitive,Symbol.toStringTag, "eval"];// 需要过滤的属性
-eggvm.memory.asyncEvent = {};// 异步事件
 eggvm.memory.globalVar = {};// 存取全局变量
 eggvm.memory.globalVar.jsonCookie = {};// json格式的cookie
 eggvm.memory.globalVar.fontList = ["SimHei", "SimSun", "NSimSun", "FangSong", "KaiTi"]; // 浏览器能够识别的字体
+eggvm.memory.asyncEvent = {};
 eggvm.memory.globalVar.timeoutID = 0;
-eggvm.memory.globalVar.all = new ldObj();
-
 
 // 插件功能相关
 !function (){
@@ -687,38 +685,8 @@ eggvm.memory.globalVar.all = new ldObj();
 }();
 // 浏览器接口具体的实现
 !function (){
-    eggvm.envFunc.Document_all_get = function Document_all_get(){
-        let all = eggvm.memory.globalVar.all;
-        Object.setPrototypeOf(all, HTMLAllCollection.prototype);
-        return all;
-    }
-    eggvm.envFunc.Event_timeStamp_get = function Event_timeStamp_get(){
-        return eggvm.toolsFunc.getProtoArr.call(this, "timeStamp");
-    }
-    eggvm.envFunc.MouseEvent_clientY_get = function MouseEvent_clientY_get(){
-        return eggvm.toolsFunc.getProtoArr.call(this, "clientY");
-    }
-    eggvm.envFunc.MouseEvent_clientX_get = function MouseEvent_clientX_get(){
-        return eggvm.toolsFunc.getProtoArr.call(this, "clientX");
-    }
-    eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListener(){
-        let type = arguments[0];
-        let listener = arguments[1];
-        let options = arguments[2];
-        let event = {
-            "self": this,
-            "type": type,
-            "listener":listener,
-            "options":options
-        }
-        if(eggvm.memory.asyncEvent.listener === undefined){
-            eggvm.memory.asyncEvent.listener = {};
-        }
-        if(eggvm.memory.asyncEvent.listener[type] === undefined){
-           eggvm.memory.asyncEvent.listener[type] = [];
-        }
-        eggvm.memory.asyncEvent.listener[type].push(event);
-    }
+
+
     eggvm.envFunc.BatteryManager_level_get = function BatteryManager_level_get(){
         return 1;
     }
@@ -1157,6 +1125,7 @@ eggvm.memory.globalVar.all = new ldObj();
         let tagJson = eggvm.toolsFunc.getTagJson(tagStr);
         let tag = document.createElement(tagJson.type);
         for(const key in tagJson.prop){
+            debugger;
             tag[key] = tagJson.prop[key];
             if(tag[key] === undefined){
                 eggvm.toolsFunc.setProtoArr.call(tag, key, tagJson.prop[key]);
@@ -1743,16 +1712,6 @@ eggvm.toolsFunc.defineProperty(HTMLMetaElement.prototype, "scheme", {configurabl
 HTMLSpanElement = function HTMLSpanElement(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
 eggvm.toolsFunc.safeProto(HTMLSpanElement, "HTMLSpanElement");
 Object.setPrototypeOf(HTMLSpanElement.prototype, HTMLElement.prototype);
-
-// HTMLStyleElement对象
-HTMLStyleElement = function HTMLStyleElement(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
-eggvm.toolsFunc.safeProto(HTMLStyleElement, "HTMLStyleElement");
-Object.setPrototypeOf(HTMLStyleElement.prototype, HTMLElement.prototype);
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "disabled", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "disabled_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "media", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "media_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "type", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "type_set", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "sheet", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "sheet_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(HTMLStyleElement.prototype, "blocking", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, HTMLStyleElement.prototype, "HTMLStyleElement", "blocking_set", arguments)}});
 
 // Document对象
 Document = function Document(){}
@@ -3043,83 +3002,6 @@ eggvm.toolsFunc.defineProperty(BatteryManager.prototype, "onchargingtimechange",
 eggvm.toolsFunc.defineProperty(BatteryManager.prototype, "ondischargingtimechange", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, BatteryManager.prototype, "BatteryManager", "ondischargingtimechange_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, BatteryManager.prototype, "BatteryManager", "ondischargingtimechange_set", arguments)}});
 eggvm.toolsFunc.defineProperty(BatteryManager.prototype, "onlevelchange", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, BatteryManager.prototype, "BatteryManager", "onlevelchange_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, BatteryManager.prototype, "BatteryManager", "onlevelchange_set", arguments)}});
 
-// Event对象
-Event = function Event(){return eggvm.toolsFunc.throwError("TypeError", "Failed to construct 'Event': 1 argument required, but only 0 present.")}
-eggvm.toolsFunc.safeProto(Event, "Event");
-eggvm.toolsFunc.defineProperty(Event, "NONE", {configurable:false, enumerable:true, writable:false, value:0});
-eggvm.toolsFunc.defineProperty(Event, "CAPTURING_PHASE", {configurable:false, enumerable:true, writable:false, value:1});
-eggvm.toolsFunc.defineProperty(Event, "AT_TARGET", {configurable:false, enumerable:true, writable:false, value:2});
-eggvm.toolsFunc.defineProperty(Event, "BUBBLING_PHASE", {configurable:false, enumerable:true, writable:false, value:3});
-eggvm.toolsFunc.defineProperty(Event.prototype, "type", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "type_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "target", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "target_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "currentTarget", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "currentTarget_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "eventPhase", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "eventPhase_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "bubbles", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "bubbles_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "cancelable", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "cancelable_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "defaultPrevented", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "defaultPrevented_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "composed", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "composed_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "timeStamp", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "timeStamp_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "srcElement", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "srcElement_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(Event.prototype, "returnValue", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "returnValue_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "returnValue_set", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "cancelBubble", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "cancelBubble_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "cancelBubble_set", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "NONE", {configurable:false, enumerable:true, writable:false, value:0});
-eggvm.toolsFunc.defineProperty(Event.prototype, "CAPTURING_PHASE", {configurable:false, enumerable:true, writable:false, value:1});
-eggvm.toolsFunc.defineProperty(Event.prototype, "AT_TARGET", {configurable:false, enumerable:true, writable:false, value:2});
-eggvm.toolsFunc.defineProperty(Event.prototype, "BUBBLING_PHASE", {configurable:false, enumerable:true, writable:false, value:3});
-eggvm.toolsFunc.defineProperty(Event.prototype, "composedPath", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "composedPath", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "initEvent", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "initEvent", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "preventDefault", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "preventDefault", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "stopImmediatePropagation", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "stopImmediatePropagation", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "stopPropagation", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "stopPropagation", arguments)}});
-eggvm.toolsFunc.defineProperty(Event.prototype, "path", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Event.prototype, "Event", "path_get", arguments)}, set:undefined});
-
-// UIEvent对象
-UIEvent = function UIEvent(){return eggvm.toolsFunc.throwError("TypeError", "Failed to construct 'UIEvent': 1 argument required, but only 0 present.")}
-eggvm.toolsFunc.safeProto(UIEvent, "UIEvent");
-Object.setPrototypeOf(UIEvent.prototype, Event.prototype);
-eggvm.toolsFunc.defineProperty(UIEvent.prototype, "view", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, UIEvent.prototype, "UIEvent", "view_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(UIEvent.prototype, "detail", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, UIEvent.prototype, "UIEvent", "detail_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(UIEvent.prototype, "sourceCapabilities", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, UIEvent.prototype, "UIEvent", "sourceCapabilities_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(UIEvent.prototype, "which", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, UIEvent.prototype, "UIEvent", "which_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(UIEvent.prototype, "initUIEvent", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, UIEvent.prototype, "UIEvent", "initUIEvent", arguments)}});
-
-// MouseEvent对象
-MouseEvent = function MouseEvent(){return eggvm.toolsFunc.throwError("TypeError", "Failed to construct 'MouseEvent': 1 argument required, but only 0 present.")}
-eggvm.toolsFunc.safeProto(MouseEvent, "MouseEvent");
-Object.setPrototypeOf(MouseEvent.prototype, UIEvent.prototype);
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "screenX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "screenX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "screenY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "screenY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "clientX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "clientX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "clientY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "clientY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "ctrlKey", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "ctrlKey_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "shiftKey", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "shiftKey_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "altKey", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "altKey_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "metaKey", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "metaKey_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "button", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "button_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "buttons", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "buttons_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "relatedTarget", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "relatedTarget_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "pageX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "pageX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "pageY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "pageY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "x", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "x_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "y", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "y_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "offsetX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "offsetX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "offsetY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "offsetY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "movementX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "movementX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "movementY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "movementY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "fromElement", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "fromElement_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "toElement", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "toElement_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "layerX", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "layerX_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "layerY", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "layerY_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "getModifierState", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "getModifierState", arguments)}});
-eggvm.toolsFunc.defineProperty(MouseEvent.prototype, "initMouseEvent", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, MouseEvent.prototype, "MouseEvent", "initMouseEvent", arguments)}});
-
-// HTMLAllCollection对象
-HTMLAllCollection = function HTMLAllCollection(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
-eggvm.toolsFunc.safeProto(HTMLAllCollection, "HTMLAllCollection");
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "length", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "length_get", arguments)}, set:undefined});
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "item", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "item", arguments)}});
-eggvm.toolsFunc.defineProperty(HTMLAllCollection.prototype, "namedItem", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, HTMLAllCollection.prototype, "HTMLAllCollection", "namedItem", arguments)}});
-
 // window对象
 // 删除浏览器中不存在的对象
 delete global;
@@ -3128,7 +3010,6 @@ delete process;
 delete GLOBAL;
 delete root;
 delete VMError;
-delete ldObj;
 delete globalThis[Symbol.toStringTag];
 delete WindowProperties;
 window = globalThis;
@@ -3246,20 +3127,6 @@ eval = eggvm.toolsFunc.hook(eval, undefined, false, function (){},function (){})
         });
 
 }();
-// 网页变量初始化
-
-!function (){
-    // console.log(Date.now());// 1666689952666
-    // console.log(new Date().getTime());// 1666689952666
-    // console.log(Math.random());// 0.5
-
-    // let meta1 = document.createElement("meta");
-    // let meta2 = document.createElement("meta");
-    // let head = document.createElement("head");
-    // meta2.content = "YVc1cGRDQjBZV2";
-    // eggvm.toolsFunc.setProtoArr.call(meta2, "parentNode", head);
-    let body = document.createElement("body");
-}();
 // 需要代理的对象
 // window = new Proxy(window, {});
 localStorage = eggvm.toolsFunc.proxy(localStorage, "localStorage");
@@ -3267,53 +3134,17 @@ sessionStorage = eggvm.toolsFunc.proxy(sessionStorage, "sessionStorage");
 location = eggvm.toolsFunc.proxy(location, "location");
 document = eggvm.toolsFunc.proxy(document, "document");
 window = eggvm.toolsFunc.proxy(window, "window");
-// 需要调试的代码
-
-debugger;
-// 函数的入参
-// 函数的返回值
-// 执行这个函数对全局产生的影响
-// document.cookie = "aaaa";
-// console.log(document.cookie);
-// document.cookie = "a=1";
-// console.log(document.cookie);
-// document.cookie = "a=10";
-// console.log(document.cookie);
-// document.cookie = "b=20";
-// console.log(document.cookie);
-// debugger;
-// debugger;
-// navigator.plugins.item(0);
-// navigator.plugins.namedItem("Chrome PDF Viewer");
-// navigator.plugins[0].item(0);
-// navigator.plugins[0].namedItem("application/pdf");
-// navigator.mimeTypes.item(0);
-// navigator.mimeTypes.namedItem("application/pdf");
-
-// console.log("开始执行同步代码");// 1
-// function loadFunc(){
-//     console.log("正在执行load事件");//3
-// }
-// window.addEventListener("load", loadFunc);
-// console.log("结束执行同步代码");//2
-
-// 实现环境功能
-// mdn 查询函数的用法
-//
-
-// 入参
-// 返回值
-// this对象
-// 对全局对象产生影响
-
-
-debugger;
-// 异步执行的代码
-
-// let loadEventList = eggvm.memory.asyncEvent.listener["load"];
-// for(let i=0;i<loadEventList.length;i++){
-//     let loadEvent = loadEventList[i];
-//     let self = loadEvent.self;
-//     let listener = loadEvent.listener;
-//     listener.call(self);
-// }
+console.log("同步代码开始执行");
+navigator.getBattery().then(function(battery){
+    console.log("charging",battery.charging);
+    console.log("chargingTime",battery.chargingTime);
+    console.log("level",battery.level);
+    result = btoa("" + battery.charging + battery.chargingTime + battery.level);
+    console.log(result);
+});
+console.log("同步代码结束执行");
+let promise = eggvm.memory.asyncEvent.promise;
+for(let i=0;i<promise.length;i++){
+    let callback = promise[i];
+    callback();
+}

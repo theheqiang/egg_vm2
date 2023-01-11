@@ -1,0 +1,165 @@
+{has|obj:[plugin_ID(1)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[plugin_ID(1)] -> prop:[Symbol(data)]} 
+{has|obj:[plugin_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[mimeTypeArray_ID(3)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[mimeTypeArray_ID(3)] -> prop:[Symbol(data)]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[0]} 
+{getOwnPropertyDescriptor|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[mimeTypeArray_ID(3)] -> prop:[0]} 
+{set|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[mimeTypeArray_ID(3)] -> prop:[application/pdf]} 
+{has|obj:[mimeTypeArray_ID(3)] -> prop:[Symbol(data)], result:[true]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(1)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(1)] -> prop:[0]} 
+{set|obj:[plugin_ID(1)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(1)] -> prop:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[1]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{getOwnPropertyDescriptor|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[mimeTypeArray_ID(3)] -> prop:[1]} 
+{set|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[mimeTypeArray_ID(3)] -> prop:[text/pdf]} 
+{has|obj:[mimeTypeArray_ID(3)] -> prop:[Symbol(data)], result:[true]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(1)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(1)] -> prop:[1]} 
+{set|obj:[plugin_ID(1)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(1)] -> prop:[text/pdf]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)]} 
+{get|obj:[pluginArray_ID(5)] -> prop:[length],ret:[0]} 
+{getOwnPropertyDescriptor|obj:[pluginArray_ID(5)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[0]} 
+{getPrototypeOf|obj:[plugin_ID(1)]} 
+{set|obj:[pluginArray_ID(5)] -> prop:[0],type:[[object Plugin]]} 
+{get|obj:[plugin_ID(1)] -> prop:[name],ret:[PDF Viewer]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[PDF Viewer]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(6)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[plugin_ID(6)] -> prop:[Symbol(data)]} 
+{has|obj:[plugin_ID(6)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(6)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(6)] -> prop:[Symbol(data)], result:[true]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(6)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(6)] -> prop:[0]} 
+{set|obj:[plugin_ID(6)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(6)] -> prop:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(6)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(6)] -> prop:[1]} 
+{set|obj:[plugin_ID(6)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(6)] -> prop:[text/pdf]} 
+{get|obj:[pluginArray_ID(5)] -> prop:[length],ret:[1]} 
+{getOwnPropertyDescriptor|obj:[pluginArray_ID(5)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[1]} 
+{getPrototypeOf|obj:[plugin_ID(6)]} 
+{set|obj:[pluginArray_ID(5)] -> prop:[1],type:[[object Plugin]]} 
+{get|obj:[plugin_ID(6)] -> prop:[name],ret:[Chrome PDF Viewer]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[Chrome PDF Viewer]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(9)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[plugin_ID(9)] -> prop:[Symbol(data)]} 
+{has|obj:[plugin_ID(9)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(9)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(9)] -> prop:[Symbol(data)], result:[true]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(9)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(9)] -> prop:[0]} 
+{set|obj:[plugin_ID(9)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(9)] -> prop:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(9)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(9)] -> prop:[1]} 
+{set|obj:[plugin_ID(9)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(9)] -> prop:[text/pdf]} 
+{get|obj:[pluginArray_ID(5)] -> prop:[length],ret:[2]} 
+{getOwnPropertyDescriptor|obj:[pluginArray_ID(5)] -> prop:[2],type:[[object Undefined]]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[2]} 
+{getPrototypeOf|obj:[plugin_ID(9)]} 
+{set|obj:[pluginArray_ID(5)] -> prop:[2],type:[[object Plugin]]} 
+{get|obj:[plugin_ID(9)] -> prop:[name],ret:[Chromium PDF Viewer]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[Chromium PDF Viewer]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(12)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[plugin_ID(12)] -> prop:[Symbol(data)]} 
+{has|obj:[plugin_ID(12)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(12)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(12)] -> prop:[Symbol(data)], result:[true]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(12)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(12)] -> prop:[0]} 
+{set|obj:[plugin_ID(12)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(12)] -> prop:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(12)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(12)] -> prop:[1]} 
+{set|obj:[plugin_ID(12)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(12)] -> prop:[text/pdf]} 
+{get|obj:[pluginArray_ID(5)] -> prop:[length],ret:[3]} 
+{getOwnPropertyDescriptor|obj:[pluginArray_ID(5)] -> prop:[3],type:[[object Undefined]]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[3]} 
+{getPrototypeOf|obj:[plugin_ID(12)]} 
+{set|obj:[pluginArray_ID(5)] -> prop:[3],type:[[object Plugin]]} 
+{get|obj:[plugin_ID(12)] -> prop:[name],ret:[Microsoft Edge PDF Viewer]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[Microsoft Edge PDF Viewer]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(15)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[plugin_ID(15)] -> prop:[Symbol(data)]} 
+{has|obj:[plugin_ID(15)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(15)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[plugin_ID(15)] -> prop:[Symbol(data)], result:[true]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(15)] -> prop:[0],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(15)] -> prop:[0]} 
+{set|obj:[plugin_ID(15)] -> prop:[0],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(15)] -> prop:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[length],ret:[2]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[0],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(2)] -> prop:[type],ret:[application/pdf]} 
+{get|obj:[mimeTypeArray_ID(3)] -> prop:[1],type:[[object MimeType]]} 
+{get|obj:[mimeType_ID(4)] -> prop:[type],ret:[text/pdf]} 
+{getOwnPropertyDescriptor|obj:[plugin_ID(15)] -> prop:[1],type:[[object Undefined]]} 
+{defineProperty|obj:[plugin_ID(15)] -> prop:[1]} 
+{set|obj:[plugin_ID(15)] -> prop:[1],type:[[object MimeType]]} 
+{defineProperty|obj:[plugin_ID(15)] -> prop:[text/pdf]} 
+{get|obj:[pluginArray_ID(5)] -> prop:[length],ret:[4]} 
+{getOwnPropertyDescriptor|obj:[pluginArray_ID(5)] -> prop:[4],type:[[object Undefined]]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[4]} 
+{getPrototypeOf|obj:[plugin_ID(15)]} 
+{set|obj:[pluginArray_ID(5)] -> prop:[4],type:[[object Plugin]]} 
+{get|obj:[plugin_ID(15)] -> prop:[name],ret:[WebKit built-in PDF]} 
+{defineProperty|obj:[pluginArray_ID(5)] -> prop:[WebKit built-in PDF]} 
+{has|obj:[pluginArray_ID(5)] -> prop:[Symbol(data)], result:[true]} 
+https://baidu.com/test/open?xxxxx=aHR0cHM6Ly9iYWlkdS5jb20vdGVzdC9vcGVuR0VU 
+https://baidu.com/test/open?xxxxx=aHR0cHM6Ly9iYWlkdS5jb20vdGVzdC9vcGVuR0VU

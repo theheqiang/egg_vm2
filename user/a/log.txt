@@ -1,0 +1,37 @@
+{get|obj:[document] -> prop:[createElement],type:[[object Function]]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(Symbol.toStringTag)],ret:[HTMLAnchorElement]} 
+{getPrototypeOf|obj:[Document_createElement_a_ID(1)]} 
+{apply|function:[document.createElement], args:[a], type:[[object HTMLAnchorElement]]} 
+{get|obj:[location] -> prop:[protocol],ret:[https:]} 
+{get|obj:[location] -> prop:[hostname],ret:[www.baidu.com]} 
+{get|obj:[location] -> prop:[protocol],ret:[https:]} 
+{get|obj:[location] -> prop:[hostname],ret:[www.baidu.com]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[false]} 
+{defineProperty|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{set|obj:[Document_createElement_a_ID(1)] -> prop:[href],value:[/a/test]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[href],ret:[https://www.baidu.com/a/test]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{has|obj:[Document_createElement_a_ID(1)] -> prop:[Symbol(data)], result:[true]} 
+{set|obj:[Document_createElement_a_ID(1)] -> prop:[href],value:[https://www.baidu.com/a/test]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[href],ret:[https://www.baidu.com/a/test]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[protocol],ret:[https:]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[hostname],ret:[www.baidu.com]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[hash],ret:[]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[origin],ret:[https://www.baidu.com]} 
+{get|obj:[Document_createElement_a_ID(1)] -> prop:[search],ret:[]} 
+环境正常 
