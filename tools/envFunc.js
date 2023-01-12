@@ -408,7 +408,7 @@
     eggvm.envFunc.Storage_setItem = function Storage_setItem(){
         let keyName = arguments[0];
         let keyValue = arguments[1];
-        this[keyName] = keyValue;
+         this[keyName] = keyValue;
     }
     eggvm.envFunc.Storage_getItem = function Storage_getItem(){
         let key = arguments[0];
