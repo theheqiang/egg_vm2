@@ -50,6 +50,7 @@ function getCode(){
     code += getFile("WebGLProgram");
     code += getFile("XMLHttpRequestEventTarget");
     code += getFile("XMLHttpRequest");
+    code += getFile("NetworkInformation");
     code += getFile("BatteryManager");
     code += getFile("Event");
     code += getFile("UIEvent");

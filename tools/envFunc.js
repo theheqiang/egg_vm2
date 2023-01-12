@@ -5,6 +5,9 @@
         Object.setPrototypeOf(all, HTMLAllCollection.prototype);
         return all;
     }
+    eggvm.envFunc.Navigator_webkitPersistentStorage_get = function Navigator_webkitPersistentStorage_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this,"webkitPersistentStorage");
+    }
     eggvm.envFunc.Document_characterSet_get = function Document_characterSet_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "characterSet");
     }
@@ -244,6 +247,9 @@
     eggvm.envFunc.Navigator_mimeTypes_get = function Navigator_mimeTypes_get(){
         return eggvm.memory.globalVar.mimeTypeArray;
     }
+    eggvm.envFunc.Navigator_connection_get = function Navigator_connection_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this,"connection");
+    }
     eggvm.envFunc.MimeType_suffixes_get = function MimeType_suffixes_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "suffixes");
     }
@@ -311,6 +317,26 @@
         eggvm.toolsFunc.setProtoArr.call(this, "hash", jsonUrl["hash"]);
         eggvm.toolsFunc.setProtoArr.call(this, "href", jsonUrl["href"]);
     }
+    eggvm.envFunc.location_href_set = function location_href_set(){
+        let url = arguments[0];
+        if(url.indexOf("http") === -1){
+            url = location.protocol + "//" + location.hostname + url;
+        }
+        let jsonUrl = eggvm.toolsFunc.parseUrl(url);
+        eggvm.toolsFunc.setProtoArr.call(this, "origin", jsonUrl["origin"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "protocol", jsonUrl["protocol"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "host", jsonUrl["host"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "hostname", jsonUrl["hostname"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "port", jsonUrl["port"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "pathname", jsonUrl["pathname"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "search", jsonUrl["search"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "hash", jsonUrl["hash"]);
+        eggvm.toolsFunc.setProtoArr.call(this, "href", jsonUrl["href"]);
+    }
+    eggvm.envFunc.location_href_get = function location_href_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "href");
+    }
+
     eggvm.envFunc.location_hostname_get = function location_hostname_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "hostname");
     }
@@ -320,6 +346,12 @@
     }
     eggvm.envFunc.location_protocol_get = function location_protocol_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "protocol");
+    }
+    eggvm.envFunc.location_origin_get = function location_origin_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "origin");
+    }
+    eggvm.envFunc.location_port_get = function location_port_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "port");
     }
     eggvm.envFunc.location_protocol_set = function location_protocol_set(){
         let value = arguments[0];
