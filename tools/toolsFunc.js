@@ -136,7 +136,7 @@
         return tagJson;
     }
 
-
+    // 获取type类型的集合
     eggvm.toolsFunc.getCollection = function getCollection(type){
         let collection = [];
         for (let i = 0; i < eggvm.memory.tag.length; i++) {
@@ -334,10 +334,8 @@
                         console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}]}`);
                         // 递归代理
                         result = eggvm.toolsFunc.proxy(result, `${objName}.${prop.toString()}`);
-                    }else if(typeof result === "symbol"){
-                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${result.toString()}]}`);
                     }else{
-                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${result}]}`);
+                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${String(result)}]}`);
                     }
 
                 }catch (e) {
@@ -352,10 +350,8 @@
                     let type = eggvm.toolsFunc.getType(value);
                     if(value instanceof Object){
                         console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}]}`);
-                    }else if(typeof value === "symbol"){
-                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${value.toString()}]}`);
                     }else{
-                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${value}]}`);
+                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${String(value)}]}`);
                     }
                 }catch (e){
                     console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],error:[${e.message}]}`);
