@@ -286,6 +286,12 @@
     eggvm.envFunc.HTMLAnchorElement_hash_get = function HTMLAnchorElement_hash_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "hash");
     }
+    eggvm.envFunc.HTMLAnchorElement_port_get = function HTMLAnchorElement_port_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "port");
+    }
+    eggvm.envFunc.HTMLAnchorElement_pathname_get = function HTMLAnchorElement_pathname_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "pathname");
+    }
     eggvm.envFunc.HTMLAnchorElement_origin_get = function HTMLAnchorElement_origin_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "origin");
     }
@@ -300,6 +306,9 @@
     }
     eggvm.envFunc.HTMLAnchorElement_href_get = function HTMLAnchorElement_href_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "href");
+    }
+    eggvm.envFunc.HTMLAnchorElement_host_get = function HTMLAnchorElement_host_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "host");
     }
     eggvm.envFunc.HTMLAnchorElement_href_set = function HTMLAnchorElement_href_set(){
         let url = arguments[0];
@@ -339,6 +348,9 @@
 
     eggvm.envFunc.location_hostname_get = function location_hostname_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "hostname");
+    }
+    eggvm.envFunc.location_pathname_get = function location_pathname_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "pathname");
     }
     eggvm.envFunc.location_hostname_set = function location_hostname_set(){
         let value = arguments[0];
