@@ -507,6 +507,10 @@
                 collection = eggvm.toolsFunc.getCollection('[object HTMLMetaElement]');
                 collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Document_getElementsByTagName_${tagName}`)
                 break;
+            case "base":
+                collection = eggvm.toolsFunc.getCollection('[object HTMLBaseElement]');
+                collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Document_getElementsByTagName_${tagName}`)
+                break;
             default:
                 console.log(`Document_getElementsByTagName_${tagName}未实现`);
                 break;
@@ -518,7 +522,7 @@
         let collection = [];
         switch (tagName){
             case "i":
-                collection = eggvm.toolsFunc.getCollection('[object HTMLElement]');
+                collection = [];
                 collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Element_getElementsByTagName_${tagName}`)
                 break;
             default:
