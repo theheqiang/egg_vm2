@@ -40,7 +40,6 @@ getProtoEnvCode = function getProtoEnvCode(proto, instanceObj) {
     }
     console.log(code);
     copy(code);
-    // return code;
 }
 // 获取实例对象的环境代码
 getObjEnvCode = function getObjEnvCode(obj, objName, instanceObj) {
@@ -75,9 +74,8 @@ getDescriptor = function getDescriptor(obj, prop, objName, protoName, instanceOb
     if (descriptor.hasOwnProperty("value")) {
         let value = descriptor.value;
         if (typeof value === "object") {
-            // 需要关注
+            // 需要关注, JSON.stringify(value);
             console.log("需要额外关注", value);
-            // JSON.stringify(value);
             code += `value:{}`
         } else if (typeof value === "function") {
             code += `value:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}", arguments)}`;
@@ -102,10 +100,8 @@ getDescriptor = function getDescriptor(obj, prop, objName, protoName, instanceOb
             } else {
                 if (typeof defaultValue === "string") {
                     code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, '${defaultValue}')}, `;
-                } else if (typeof value === 'symbol') {
-                    code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, ${defaultValue.toString()})}, `;
-                } else {
-                    code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, ${defaultValue})}, `;
+                }else {
+                    code += `get:function (){return eggvm.toolsFunc.dispatch(this, ${objName}, "${protoName}", "${prop}_get", arguments, ${String(defaultValue)})}, `;
                 }
             }
         } else {
