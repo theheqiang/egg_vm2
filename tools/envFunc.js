@@ -23,6 +23,30 @@
     eggvm.envFunc.MouseEvent_clientX_get = function MouseEvent_clientX_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "clientX");
     }
+    eggvm.envFunc.MouseEvent_offsetY_get = function MouseEvent_offsetY_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "offsetY");
+    }
+    eggvm.envFunc.MouseEvent_offsetX_get = function MouseEvent_offsetX_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "offsetX");
+    }
+    eggvm.envFunc.MouseEvent_x_get = function MouseEvent_x_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "x");
+    }
+    eggvm.envFunc.MouseEvent_y_get = function MouseEvent_y_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "y");
+    }
+    eggvm.envFunc.MouseEvent_screenX_get = function MouseEvent_screenX_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "screenX");
+    }
+    eggvm.envFunc.MouseEvent_screenY_get = function MouseEvent_screenY_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "screenY");
+    }
+
+    eggvm.envFunc.MouseEvent_button_get = function MouseEvent_button_get(){
+        // 暂时设置为0,为鼠标左键
+        return 0;
+    }
+
     eggvm.envFunc.EventTarget_addEventListener = function EventTarget_addEventListener(){
         let type = arguments[0];
         let listener = arguments[1];
@@ -565,22 +589,24 @@
                 tempCookie += `${key}=${jsonCookie[key]}; `;
             }
         }
-        return tempCookie;
+        return tempCookie.replace(/; $/,"");
     }
     eggvm.envFunc.Document_cookie_set = function Document_cookie_set(){
         let cookieValue = arguments[0];
-        let index = cookieValue.indexOf(";");
-        if(index !== -1){
-            cookieValue = cookieValue.substring(0, index);
-        }
-        if(cookieValue.indexOf("=") === -1){
-            eggvm.memory.globalVar.jsonCookie[""] = cookieValue.trim();
-        }else{
-            let item = cookieValue.split("=");
-            let k = item[0].trim();
-            let v = item[1].trim();
-            eggvm.memory.globalVar.jsonCookie[k] = v;
-        }
+        cookieValue = cookieValue.replace(/[; ]*$/,"");
+
+        let itemList = cookieValue.split("; ");
+        itemList.forEach((item) =>{
+
+            if(item.indexOf("=") === -1){
+                eggvm.memory.globalVar.jsonCookie[""] = item.trim();
+            }else{
+                let k = item.split("=")[0].trim();
+                let v = item.split("=")[1].trim();
+                eggvm.memory.globalVar.jsonCookie[k] = v;
+            }
+        })
+
     }
 
     eggvm.envFunc.document_location_get = function document_location_get(){

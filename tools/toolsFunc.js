@@ -130,7 +130,7 @@
         for(let i=1;i<arrList.length;i++){
             let item = arrList[i].split("=");
             let key = item[0];
-            let value = item[1].replaceAll("\"","").replaceAll("'","");
+            let value = item[1].replace(/["']/g,"");
             tagJson["prop"][key] = value;
         }
         return tagJson;
