@@ -1,7 +1,7 @@
-[Document_documentElement_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[Document_documentElement_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[window_setInterval]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[window_setInterval]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-Document_getElementsByTagName_script未实现 
-[Document_documentElement_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-enable_gOEoYMGvg36y=true; gOEoYMGvg36yT=53Zl4VbHr10EqqqDmj75_gqcaNWZ7qP1k4YzpGZRkQ1gvNYlZFrX0Nyenls7rctTq13XH7teN9hPDkH2tH_ncs3.dfogcS2GbjjzIJtr6K97gO0RI06N.eJOhePoHt0ZBuewSv0P8guFbNQoqeKl9QD;  
+[CanvasRenderingContext2D_font_set]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[CanvasRenderingContext2D_fillText]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[CanvasRenderingContext2D_shadowBlur_set]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[CanvasRenderingContext2D_arc]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[CanvasRenderingContext2D_stroke]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[Document_createEvent]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+_signature => _02B4Z6wo00f01-OQ3rQAAIDAHG8hSZuEgOvjstoAAJsqXj4MhyrGtZLkQscS7Pw5yaWxeWWcAeVBQm6ZdfSevpnXoq8yft4GSb6LRxSLtubl.7ujsSSjFRWNwvWdC3cfXlVYU30z7X3dIPhxbf 

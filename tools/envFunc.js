@@ -166,7 +166,7 @@
     }
     eggvm.envFunc.Element_innerHTML_set = function Element_innerHTML_set(){
         let htmlStr = arguments[0];
-        // <span lang="zh" style="font-family:mmll;font-size:160px">fontTest</span>
+        // <span style="font-family:mmllii;font-size:114px">mmmmmmmmmmmlliii</span>
         let style = {
             "font-size":"160px",
             "font-family":"mmll",
@@ -366,12 +366,18 @@
         eggvm.toolsFunc.setProtoArr.call(this, "hash", jsonUrl["hash"]);
         eggvm.toolsFunc.setProtoArr.call(this, "href", jsonUrl["href"]);
     }
+    eggvm.envFunc.location_toString = function location_toString(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "href");
+    }
     eggvm.envFunc.location_href_get = function location_href_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "href");
     }
 
     eggvm.envFunc.location_hostname_get = function location_hostname_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "hostname");
+    }
+    eggvm.envFunc.location_host_get = function location_host_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "host");
     }
     eggvm.envFunc.location_pathname_get = function location_pathname_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "pathname");
@@ -611,6 +617,12 @@
 
     eggvm.envFunc.document_location_get = function document_location_get(){
         return location;
+    }
+    eggvm.envFunc.Document_referrer_get = function Document_referrer_get(){
+        return "";
+    }
+    eggvm.envFunc.Document_referrer_get = function Document_referrer_get(){
+        return "";
     }
     eggvm.envFunc.window_top_get = function window_top_get(){
         return window;

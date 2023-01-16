@@ -52,6 +52,7 @@ function getCode(){
     code += getFile("XMLHttpRequest");
     code += getFile("NetworkInformation");
     code += getFile("BatteryManager");
+    code += getFile("Screen");
     code += getFile("Event");
     code += getFile("UIEvent");
     code += getFile("MouseEvent");

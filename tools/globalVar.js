@@ -16,20 +16,6 @@
     eggvm.toolsFunc.createPlugin({
             "description": "Portable Document Format",
             "filename":"internal-pdf-viewer",
-            "name":"PDF Viewer",
-            "mimeTypes": [{
-                "type":'application/pdf',
-                "suffixes": 'pdf',
-                "description": 'Portable Document Format'
-            },{
-                "type":'text/pdf',
-                "suffixes": 'pdf',
-                "description": 'Portable Document Format'
-            }]
-        });
-    eggvm.toolsFunc.createPlugin({
-            "description": "Portable Document Format",
-            "filename":"internal-pdf-viewer",
             "name":"Chrome PDF Viewer",
             "mimeTypes": [{
                 "type":'application/pdf',
@@ -69,6 +55,20 @@
                 "description": 'Portable Document Format'
             }]
         });
+    eggvm.toolsFunc.createPlugin({
+        "description": "Portable Document Format",
+        "filename":"internal-pdf-viewer",
+        "name":"PDF Viewer",
+        "mimeTypes": [{
+            "type":'application/pdf',
+            "suffixes": 'pdf',
+            "description": 'Portable Document Format'
+        },{
+            "type":'text/pdf',
+            "suffixes": 'pdf',
+            "description": 'Portable Document Format'
+        }]
+    });
     eggvm.toolsFunc.createPlugin({
             "description": "Portable Document Format",
             "filename":"internal-pdf-viewer",
