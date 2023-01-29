@@ -8,6 +8,7 @@ eggvm = {
 }
 eggvm.config.proxy = false; // 是否开启代理
 eggvm.config.print = true; // 是否输出日志
+eggvm.config.json = false; // 是否格式化输出
 eggvm.memory.symbolProxy = Symbol("proxy");// 独一无二的属性, 标记是否已代理
 eggvm.memory.symbolData = Symbol("data");// 用来保存当前对象上的原型属性
 eggvm.memory.tag = []; // 内存，存储tag标签
