@@ -27,6 +27,7 @@ function getHtmlElement(){
 function getCode(){
     let code = "// env相关代码";
     code += getFile("EventTarget");
+    code += getFile("Performance");
     code += getFile("WindowProperties");
     code += getFile("Window");
     code += getFile("Node");

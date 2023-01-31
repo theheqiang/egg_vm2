@@ -1,0 +1,24 @@
+// Performance对象
+Performance = function Performance(){return eggvm.toolsFunc.throwError("TypeError", "Illegal constructor")}
+eggvm.toolsFunc.safeProto(Performance, "Performance");
+Object.setPrototypeOf(Performance.prototype, EventTarget.prototype);
+eggvm.toolsFunc.defineProperty(Performance.prototype, "timeOrigin", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "timeOrigin_get", arguments)}, set:undefined});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "onresourcetimingbufferfull", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "onresourcetimingbufferfull_get", arguments)}, set:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "onresourcetimingbufferfull_set", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "clearMarks", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "clearMarks", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "clearMeasures", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "clearMeasures", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "clearResourceTimings", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "clearResourceTimings", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "getEntries", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "getEntries", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "getEntriesByName", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "getEntriesByName", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "getEntriesByType", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "getEntriesByType", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "mark", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "mark", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "measure", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "measure", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "now", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "now", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "setResourceTimingBufferSize", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "setResourceTimingBufferSize", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "toJSON", {configurable:true, enumerable:true, writable:true, value:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "toJSON", arguments)}});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "timing", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "timing_get", arguments)}, set:undefined});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "navigation", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "navigation_get", arguments)}, set:undefined});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "memory", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "memory_get", arguments)}, set:undefined});
+eggvm.toolsFunc.defineProperty(Performance.prototype, "eventCounts", {configurable:true, enumerable:true, get:function (){return eggvm.toolsFunc.dispatch(this, Performance.prototype, "Performance", "eventCounts_get", arguments)}, set:undefined});
+// performance
+performance = {}
+Object.setPrototypeOf(performance, Performance.prototype);

@@ -320,147 +320,150 @@
     }
 
     // proxy代理器
-    eggvm.toolsFunc.proxy = function proxy(obj, objName) {
+    eggvm.toolsFunc.proxy = function proxy(obj, objName){
         // obj: 原始对象
         // objName: 原始对象的名字
-        if (!eggvm.config.proxy) {
+        if(!eggvm.config.proxy){
             return obj;
         }
-        if (eggvm.memory.symbolProxy in obj) {// 判断对象obj是否是已代理的对象
+        if(eggvm.memory.symbolProxy in obj){// 判断对象obj是否是已代理的对象
             return obj[eggvm.memory.symbolProxy];
         }
         let handler = {
-            get: function (target, prop, receiver) {// 三个参数
+            get:function (target,prop,receiver){// 三个参数
                 let result;
                 try {//防止报错
-                    result = Reflect.get(target, prop, receiver);
-                    if (eggvm.toolsFunc.filterProxyProp(prop)) {
+                    result = Reflect.get(target,prop,receiver);
+                    if(eggvm.toolsFunc.filterProxyProp(prop)){
                         return result;
                     }
                     let type = eggvm.toolsFunc.getType(result);
-                    if (result instanceof Object) {
+                    if(result instanceof Object){
                         console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}]}`);
                         // 递归代理
                         result = eggvm.toolsFunc.proxy(result, `${objName}.${prop.toString()}`);
-                    } else {
-                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${String(result)}]}`);
+                    }else if(typeof result === "symbol"){
+                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${result.toString()}]}`);
+                    }else{
+                        console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],ret:[${result}]}`);
                     }
 
-                } catch (e) {
+                }catch (e) {
                     console.log(`{get|obj:[${objName}] -> prop:[${prop.toString()}],error:[${e.message}]}`);
                 }
                 return result;
             },
-            set: function (target, prop, value, receiver) {
+            set:function (target,prop,value,receiver){
                 let result;
-                try {
-                    result = Reflect.set(target, prop, value, receiver);
+                try{
+                    result = Reflect.set(target,prop,value,receiver);
                     let type = eggvm.toolsFunc.getType(value);
-                    if (value instanceof Object && eggvm.config.json) {
-                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}],value:[${JSON.stringify(eggvm.toolsFunc.decycle(value))}]}`);
-                    } else if (value instanceof Object) {
+                    if(value instanceof Object){
                         console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}]}`);
-                    } else {
-                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${String(value)}]}`);
+                    }else if(typeof value === "symbol"){
+                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${value.toString()}]}`);
+                    }else{
+                        console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],value:[${value}]}`);
                     }
-                } catch (e) {
+                }catch (e){
                     console.log(`{set|obj:[${objName}] -> prop:[${prop.toString()}],error:[${e.message}]}`);
                 }
                 return result;
             },
-            //TODO 是否打印参数
-            getOwnPropertyDescriptor: function (target, prop) {
+            getOwnPropertyDescriptor:function (target, prop){
                 let result;// undefined, 描述符对象
-                try {
+                try{
                     result = Reflect.getOwnPropertyDescriptor(target, prop);
                     let type = eggvm.toolsFunc.getType(result);
-                    if ("constructor" !== prop) {
+                    if("constructor" !== prop){
                         console.log(`{getOwnPropertyDescriptor|obj:[${objName}] -> prop:[${prop.toString()}],type:[${type}]}`);
                     }
-
-                } catch (e) {
+                    // if(typeof result !== "undefined"){
+                    //     result = eggvm.toolsFunc.proxy(result, `${objName}.${prop.toString()}.PropertyDescriptor`);
+                    // }
+                }catch (e){
                     console.log(`{getOwnPropertyDescriptor|obj:[${objName}] -> prop:[${prop.toString()}],error:[${e.message}]}`);
                 }
                 return result;
             },
-            defineProperty: function (target, prop, descriptor) {
+            defineProperty: function (target, prop, descriptor){
                 let result;
-                try {
+                try{
                     result = Reflect.defineProperty(target, prop, descriptor);
                     console.log(`{defineProperty|obj:[${objName}] -> prop:[${prop.toString()}]}`);
-                } catch (e) {
+                }catch (e) {
                     console.log(`{defineProperty|obj:[${objName}] -> prop:[${prop.toString()}],error:[${e.message}]}`);
                 }
                 return result;
             },
-            apply: function (target, thisArg, argumentsList) {
+            apply:function (target, thisArg, argumentsList){
                 // target: 函数对象
                 // thisArg: 调用函数的this指针
                 // argumentsList: 数组， 函数的入参组成的一个列表
                 let result;
-                try {
+                try{
                     result = Reflect.apply(target, thisArg, argumentsList);
                     let type = eggvm.toolsFunc.getType(result);
-                    if (result instanceof Object && eggvm.config.json) {
-                        console.log(`{apply|function:[${objName}], args:[${argumentsList}], type:[${type}],value:[${JSON.stringify(eggvm.toolsFunc.decycle(result))}]}`);
-                    } else if (result instanceof Object) {
-                        console.log(`{apply|function:[${objName}], args:[${argumentsList}], type:[${type}]}`);
-                    }else {
-                        console.log(`{apply|function:[${objName}], args:[${argumentsList}] result:[${String(result)}]}`);
+                    if(result instanceof Object){
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}], type:[${type.toString()}]}`);
+                    }else if(typeof result === "symbol"){
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}] result:[${result.toString()}]}`);
+                    }else{
+                        console.log(`{apply|function:[${objName}], args:[${argumentsList}] result:[${result.toString()}]}`);
                     }
-                } catch (e) {
+                }catch (e) {
                     console.log(`{apply|function:[${objName}], args:[${argumentsList}] error:[${e.message}]}`);
                 }
                 return result;
             },
-            construct: function (target, argArray, newTarget) {
+            construct:function (target, argArray, newTarget) {
                 // target: 函数对象
                 // argArray： 参数列表
                 // newTarget：代理对象
                 let result;
-                try {
+                try{
                     result = Reflect.construct(target, argArray, newTarget);
                     let type = eggvm.toolsFunc.getType(result);
                     console.log(`{construct|function:[${objName}], type:[${type}]}`);
-                } catch (e) {
+                }catch (e) {
                     console.log(`{construct|function:[${objName}],error:[${e.message}]}`);
                 }
                 return result;
 
             },
-            deleteProperty: function (target, propKey) {
+            deleteProperty:function (target, propKey){
                 let result = Reflect.deleteProperty(target, propKey);
                 console.log(`{deleteProperty|obj:[${objName}] -> prop:[${propKey.toString()}], result:[${result}]}`);
                 return result;
             },
-            has: function (target, propKey) { // in 操作符
+            has:function (target, propKey){ // in 操作符
                 let result = Reflect.has(target, propKey);
-                if (propKey !== eggvm.memory.symbolProxy) {
+                if(propKey !== eggvm.memory.symbolProxy){
                     console.log(`{has|obj:[${objName}] -> prop:[${propKey.toString()}], result:[${result}]}`);
                 }
                 return result;
             },
-            ownKeys: function (target) {
+            ownKeys: function (target){
                 let result = Reflect.ownKeys(target);
                 console.log(`{ownKeys|obj:[${objName}]}`);
                 return result
             },
-            getPrototypeOf: function (target) {
+            getPrototypeOf:function(target){
                 let result = Reflect.getPrototypeOf(target);
                 console.log(`{getPrototypeOf|obj:[${objName}]}`);
                 return result;
             },
-            setPrototypeOf: function (target, proto) {
+            setPrototypeOf:function(target, proto){
                 let result = Reflect.setPrototypeOf(target, proto);
                 console.log(`{setPrototypeOf|obj:[${objName}]}`);
                 return result;
             },
-            preventExtensions: function (target) {
+            preventExtensions:function(target){
                 let result = Reflect.preventExtensions(target, proto);
                 console.log(`{preventExtensions|obj:[${objName}]}`);
                 return result;
             },
-            isExtensible: function (target) {
+            isExtensible:function(target){
                 let result = Reflect.isExtensible(target, proto);
                 console.log(`{isExtensible|obj:[${objName}]}`);
                 return result;
@@ -468,10 +471,10 @@
         };
         let proxyObj = new Proxy(obj, handler);
         Object.defineProperty(obj, eggvm.memory.symbolProxy, {
-            configurable: false,
-            enumerable: false,
-            writable: false,
-            value: proxyObj
+            configurable:false,
+            enumerable:false,
+            writable:false,
+            value:proxyObj
         });
         return proxyObj;
     }

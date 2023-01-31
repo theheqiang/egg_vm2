@@ -5,6 +5,17 @@
         Object.setPrototypeOf(all, HTMLAllCollection.prototype);
         return all;
     }
+    eggvm.envFunc.Document_documentElement_get = function Document_documentElement_get(){
+        let html = document.createElement("html");
+        let head = document.createElement("head");
+        let body = document.createElement("body");
+        let collection = [];
+        collection.push(head);
+        collection.push(body);
+        collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, "collection");
+        eggvm.toolsFunc.setProtoArr.call(html, "children", collection);
+        return html
+    }
     eggvm.envFunc.Navigator_webkitPersistentStorage_get = function Navigator_webkitPersistentStorage_get(){
         return eggvm.toolsFunc.getProtoArr.call(this,"webkitPersistentStorage");
     }
@@ -152,6 +163,10 @@
     eggvm.envFunc.Element_children_get = function Element_children_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "children");
     }
+    eggvm.envFunc.HTMLIFrameElement_contentWindow_get = function HTMLIFrameElement_contentWindow_get(){
+        return eggvm.toolsFunc.getProtoArr.call(this, "contentWindow");
+    }
+
     eggvm.envFunc.Node_appendChild = function Node_appendChild(){
         let tag = arguments[0];
         let collection = [];
@@ -240,6 +255,10 @@
     }
     eggvm.envFunc.HTMLCanvasElement_width_set = function HTMLCanvasElement_width_set(){
 
+    }
+    eggvm.envFunc.HTMLIFrameElement_src_set = function HTMLIFrameElement_src_set(){
+        let value = arguments[0];
+        return eggvm.toolsFunc.setProtoArr.call(this, "src", value);
     }
     eggvm.envFunc.HTMLCanvasElement_height_set = function HTMLCanvasElement_height_set(){
 
@@ -521,6 +540,14 @@
                 break;
             case "span":
                 tag = eggvm.toolsFunc.createProxyObj(tag,HTMLSpanElement,`Document_createElement_${tagName}`);
+                eggvm.memory.tag.push(tag);
+                break;
+            case "iframe":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLIFrameElement,`Document_createElement_${tagName}`);
+                eggvm.memory.tag.push(tag);
+                break;
+            case "html":
+                tag = eggvm.toolsFunc.createProxyObj(tag,HTMLHtmlElement,`Document_createElement_${tagName}`);
                 eggvm.memory.tag.push(tag);
                 break;
             default:
