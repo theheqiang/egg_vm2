@@ -1,7 +1,1 @@
-[CanvasRenderingContext2D_font_set]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[CanvasRenderingContext2D_fillText]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[CanvasRenderingContext2D_shadowBlur_set]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[CanvasRenderingContext2D_arc]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[CanvasRenderingContext2D_stroke]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-[Document_createEvent]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
-_signature => _02B4Z6wo00f01-OQ3rQAAIDAHG8hSZuEgOvjstoAAJsqXj4MhyrGtZLkQscS7Pw5yaWxeWWcAeVBQm6ZdfSevpnXoq8yft4GSb6LRxSLtubl.7ujsSSjFRWNwvWdC3cfXlVYU30z7X3dIPhxbf 
+[object HTMLHtmlElement] 

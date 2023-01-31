@@ -1,0 +1,1 @@
+let body = document.createElement("body");

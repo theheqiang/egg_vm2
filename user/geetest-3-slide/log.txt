@@ -1,0 +1,8 @@
+Document_getElementsByTagName_body未实现 
+[Document_head_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+Document_getElementsByTagName_head未实现 
+[Document_documentElement_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[Document_compatMode_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+[Document_compatMode_get]正在执行，错误信息: Cannot read properties of undefined (reading 'apply') 
+====================== 测试区 ====================== 
+w 参数: 8b102e8cbbe1164be75a5767254cee5939f7396af3bd46a625d590d6bdfdc002815e1ca1895d97b0264efa8b62f2d8a056289a7d4947929a4729c2fa1b87c086438d47618fe496c8bdb672629b3ebf6719a2870b918e1666de650a59a52572d5fe1cd54ceb31eb01166ada9728a48def98f1fff76a3a61b35065c7a72f8ebe9d 
