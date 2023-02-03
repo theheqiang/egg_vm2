@@ -37,6 +37,8 @@ function getCode(){
     code += getFile("Document");
     code += getFile("HTMLDocument");
     code += getFile("Storage");
+    code += getFile("Request");
+    code += getFile("Headers");
     code += getFile("Navigator");
     code += getFile("Location");
     code += getFile("HTMLCollection");

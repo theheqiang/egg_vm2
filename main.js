@@ -8,7 +8,7 @@ const env = require("./config/env.config.js");
 
 
 // 名称!
-const name = "wangyi-huakuai";
+const name = "douyin";
 // 情况日志
 fs.writeFileSync(`./user/${name}/log.txt`, "");
 // 创建虚拟机实例

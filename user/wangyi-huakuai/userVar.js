@@ -38,3 +38,4 @@ window.initWatchman.version = 7,
 window.initWatchman.__instances__ = {},
 window.initWatchman.__supportCaptcha__ = !0)
 
+location.href = 'https://dun.163.com/trial/jigsaw'

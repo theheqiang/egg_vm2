@@ -5,22 +5,28 @@
         Object.setPrototypeOf(all, HTMLAllCollection.prototype);
         return all;
     }
-    eggvm.envFunc.Document_documentElement_get = function Document_documentElement_get(){
-        let html = document.createElement("html");
-        let head = document.createElement("head");
-        let body = document.createElement("body");
-        let collection = [];
-        collection.push(head);
-        collection.push(body);
-        collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, "collection");
-        eggvm.toolsFunc.setProtoArr.call(html, "children", collection);
-        return html
-    }
+    // eggvm.envFunc.Document_documentElement_get = function Document_documentElement_get(){
+    //     let html = document.createElement("html");
+    //     let head = document.createElement("head");
+    //     let body = document.createElement("body");
+    //     let collection = [];
+    //     collection.push(head);
+    //     collection.push(body);
+    //     collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, "collection");
+    //     eggvm.toolsFunc.setProtoArr.call(html, "children", collection);
+    //     return html
+    // }
     eggvm.envFunc.Navigator_webkitPersistentStorage_get = function Navigator_webkitPersistentStorage_get(){
         return eggvm.toolsFunc.getProtoArr.call(this,"webkitPersistentStorage");
     }
+    eggvm.envFunc.Navigator_javaEnabled = function Navigator_javaEnabled(){
+        return false;
+    }
     eggvm.envFunc.Document_characterSet_get = function Document_characterSet_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "characterSet");
+    }
+    eggvm.envFunc.Document_compatMode_get = function Document_compatMode_get(){
+        return "CSS1Compat"
     }
     eggvm.envFunc.Document_charset_get = function Document_characterSet_get(){
         return eggvm.toolsFunc.getProtoArr.call(this, "charset");
@@ -566,6 +572,10 @@
                 break;
             case "base":
                 collection = eggvm.toolsFunc.getCollection('[object HTMLBaseElement]');
+                collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Document_getElementsByTagName_${tagName}`)
+                break;
+            case "script":
+                collection = eggvm.toolsFunc.getCollection('[object HTMLScriptElement]');
                 collection = eggvm.toolsFunc.createProxyObj(collection, HTMLCollection, `Document_getElementsByTagName_${tagName}`)
                 break;
             default:
